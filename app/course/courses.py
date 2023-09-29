@@ -1,3 +1,5 @@
+
+# course.py
 from flask import Blueprint, render_template
 
 courses = Blueprint('courses', __name__, template_folder='templates')
