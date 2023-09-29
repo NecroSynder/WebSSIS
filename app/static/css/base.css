@@ -37,3 +37,11 @@
 .div-footer a:hover {
     color: #696969;
 }
+
+.col-sm-8 {
+    padding-top: 30px;
+}
+
+table {
+    margin-top: 40px;
+}
