@@ -1,8 +1,8 @@
 .div-title {
     text-align: center;
     color: #808080;
-    padding-top: 1vh;
-    padding-bottom: 1vh;
+    padding-top: 5vh;
+    padding-bottom: 5vh;
 
 }
 
@@ -10,10 +10,6 @@
     text-decoration: underline;
     color: #0d6efd;
     font-weight: 600;
-}
-
-.display-1 {
-    font-size: 50px;
 }
 
 .div-title a:hover {
@@ -24,8 +20,8 @@
 .div-footer {
     text-align: center;
     color: #808080;
-    padding-top: 1vh;
-    padding-bottom: 1vh;
+    padding-top: 5vh;
+    padding-bottom: 5vh;
 }
 
 .div-footer i {

@@ -1,8 +1,15 @@
-from flask import Flask, render_template
+
+# __init__.py 
+from flask import Flask, render_template, Blueprint
 from flask_mysql_connector import MySQL
 from flask_bootstrap import Bootstrap
 from config import DB_USERNAME, DB_PASSWORD, DB_NAME, DB_HOST, SECRET_KEY, BOOTSTRAP_SERVE_LOCAL
 from flask_wtf.csrf import CSRFProtect
+
+from app.student.students import students
+from app.course.courses import courses
+from app.college.colleges import colleges
+
 
 mysql = MySQL()
 bootstrap = Bootstrap()
@@ -21,11 +28,14 @@ def create_app(test_config=None):
     mysql.init_app(app)
     CSRFProtect(app)
 
-    # from .user import user_bp as user_blueprint
-    # app.register_blueprint(user_blueprint)
+
+    app.register_blueprint(students)
+    app.register_blueprint(courses)
+    app.register_blueprint(colleges)
 
     @app.route("/")
     def hello_world():
         return render_template("base.html")
+    
 
     return app

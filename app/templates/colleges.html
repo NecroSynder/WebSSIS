@@ -1,0 +1,59 @@
+
+<!-- colleges.html -->
+{% block content %}
+{% include "modals/collegeModals.html" %}
+
+<!-- Static Body Content -->
+<!-- COLLEGE -->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <!-- content goes here -->
+        <div class="col-sm-8">
+            <h2>College List <button class="btn btn-primary float-end" data-toggle="modal"
+                    data-target="#myCollegeModal">Add
+                    College</button></h2>
+
+            {%with messages = get_flashed_messages()%}
+            {%if messages%}
+            {% for message in messages %}
+
+            <div class="alert alert-success alert-dismissable" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                {{message}}
+            </div>
+
+            {%endfor%}
+            {%endif%}
+            {%endwith%}
+
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Code</th>
+                        <th scope="col-3">Name</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>CCS</td>
+                        <td>College of Computer Studies</td>
+                        <td>
+                            <a href="" class="btn btn-warning btn-sm" data-toggle="modal"
+                                data-target="#editCollegeModal">Edit</a>
+                            <a href="" onclick="return confirm('Are Sure Want To Deleted ?')"
+                                class="btn btn-danger btn-sm">Delete</a>
+                        </td>
+                    </tr>
+            </table>
+        </div>
+        <!-- Content ends here-->
+        <div class="col-sm-2"></div>
+    </div>
+</div>
+</div>
+<!-- END OF STUDENTS -->
+{% endblock %}

@@ -1,0 +1,70 @@
+
+<!-- students.html -->
+{% block content %}
+{% include "modals/studentModals.html" %}
+
+<!-- Static Body Content -->
+<!-- Students -->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <!-- content goes here -->
+        <div class="col-sm-8">
+            <h2>Student List <button class="btn btn-primary float-end" data-toggle="modal"
+                    data-target="#myStudentModal">Add
+                    Student</button></h2>
+
+            {%with messages = get_flashed_messages()%}
+            {%if messages%}
+            {% for message in messages %}
+
+            <div class="alert alert-success alert-dismissable" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                {{message}}
+            </div>
+
+            {%endfor%}
+            {%endif%}
+            {%endwith%}
+
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">First Name</th>
+                        <th scope="col">Last Name</th>
+                        <th scope="col">Course Code</th>
+                        <th scope="col">Year Level</th>
+                        <th scope="col">Gender</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td>{{ student.id }}</td>
+                        <td>{{ student.first_name }}</td>
+                        <td>{{ student.last_name }}</td>
+                        <td>{{ student.course_code }}</td>
+                        <td>{{ student.year_level }}</td>
+                        <td>{{ student.gender }}</td>
+                        <td>
+                            <a href="" class="btn btn-warning btn-sm" data-toggle="modal"
+                                data-target="#editStudentModal">Edit</a>
+                            <a href="" onclick="return confirm('Are Sure Want To Deleted ?')"
+                                class="btn btn-danger btn-sm">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <!-- Content ends here-->
+        <div class="col-sm-2"></div>
+    </div>
+</div>
+</div>
+<!-- END OF STUDENTS -->
+{% endblock %}

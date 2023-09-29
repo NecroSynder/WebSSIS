@@ -10,6 +10,7 @@ flask-mysql-connector = "*"
 flask-bootstrap = "*"
 flask-wtf = "*"
 python-dotenv = "*"
+jinja2 = "*"
 
 [dev-packages]
 

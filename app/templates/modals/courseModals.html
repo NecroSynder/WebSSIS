@@ -1,0 +1,75 @@
+<!-- Enter New Course Modal -->
+<div id="myCourseModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-primary" style="align-content: center;">Please Add
+                    New
+                    Student</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="" method="POST">
+                    <div class="form-group mb-3">
+                        <label>Code</label>
+                        <input type="text" name="name" class="form-control" id="exampleFormControlInput1"
+                            placeholder="Enter Code">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label>Name</label>
+                        <input type="text" name="email" class="form-control" id="exampleFormControlInput1"
+                            placeholder="Enter Course Name">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label>College Code</label>
+                        <input name="phone" type="text" class="form-control" id="exampleFormControlInput1"
+                            placeholder="Enter College Code">
+                    </div>
+                    <button type="submit" class="btn btn-primary mb-3">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Course Modal -->
+<div id="editCourseModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-primary" style="align-content: center;">
+                    Update
+                    Course Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="" method="POST">
+                    <input type="hidden" name="id" value="">
+                    <div class="form-group mb-3">
+                        <label>Code</label>
+                        <input value="" type="text" name="name" class="form-control" id="exampleFormControlInput1"
+                            placeholder="Edit Code">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label>Course Name</label>
+                        <input value="" type="text" name="email" class="form-control" id="exampleFormControlInput1"
+                            placeholder="Edit Course Name">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label>College Code</label>
+                        <input value="" name="phone" type="text" class="form-control" id="exampleFormControlInput1"
+                            placeholder="Edit College Code">
+                    </div>
+
+                    <button type="submit" class="btn btn-success mb-3">Update</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</tbody>
+<!-- End of Edit Course Modal -->
