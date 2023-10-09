@@ -23,23 +23,28 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
 <script>
-    $(document).ready(function() {
-        $("#students-tab").click(function() {
-            $("#students-tab-pane").load("/students/");
-        });
+    // Save the active tab to a local storage when its button is clicked
+$(".nav-link").on('click', function() {
+    var tabId = $(this).attr('id');
+    localStorage.setItem("activeTab", tabId);
+    
+    // Load the corresponding tab pane
+    var tabPaneId = $(this).data('bs-target');
+    $(tabPaneId).load("/" + tabId.replace('-tab', '') + "/");
+});
 
-        $("#courses-tab").click(function() {
-            $("#courses-tab-pane").load("/courses");
-        });
-
-        $("#colleges-tab").click(function() {
-            $("#colleges-tab-pane").load("/colleges");
-        });
-
+// When the page loads, check if the local storage item is there and read it back
+$(document).ready(function() {
+    var activeTab = localStorage.getItem("activeTab");
+    // If there is an active tab saved in the local storage, select it
+    if (activeTab) {
+        // Trigger a click event on the active tab when the page loads
+        $("#" + activeTab).trigger('click');
+    } else {
         // Trigger a click event on the students tab when the page loads
-        if ($("#students-tab").hasClass("active")) {
-            $("#students-tab").click();
-        }
-    });
+        $("#students-tab").trigger('click');
+    }
+});
 </script>
+
 

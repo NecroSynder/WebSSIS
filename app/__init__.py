@@ -1,15 +1,9 @@
-
 # __init__.py 
 from flask import Flask, render_template, Blueprint
-from flask_mysql_connector import MySQL
+from flask_mysqldb import MySQL
 from flask_bootstrap import Bootstrap
 from config import DB_USERNAME, DB_PASSWORD, DB_NAME, DB_HOST, SECRET_KEY, BOOTSTRAP_SERVE_LOCAL
 from flask_wtf.csrf import CSRFProtect
-
-from app.student.students import students
-from app.course.courses import courses
-from app.college.colleges import colleges
-
 
 mysql = MySQL()
 bootstrap = Bootstrap()
@@ -20,14 +14,18 @@ def create_app(test_config=None):
         SECRET_KEY=SECRET_KEY,
         MYSQL_USER=DB_USERNAME,
         MYSQL_PASSWORD=DB_PASSWORD,
-        MYSQL_DATABASE=DB_NAME,
         MYSQL_HOST=DB_HOST,
+        MYSQL_DB=DB_NAME,
         #BOOTSTRAP_SERVE_LOCAL=BOOTSTRAP_SERVE_LOCAL
     )
+    
     bootstrap.init_app(app)
     mysql.init_app(app)
     CSRFProtect(app)
 
+    from app.views.student.students import students
+    from app.views.course.courses import courses
+    from app.views.college.colleges import colleges
 
     app.register_blueprint(students)
     app.register_blueprint(courses)
