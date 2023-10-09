@@ -12,6 +12,7 @@ def students_page():
             "first_name": "John",
             "last_name": "Doe",
             "course_code": "BSCS",
+            "college_code": "CCS",
             "year_level": 4,
             "gender": "Male"
         },
@@ -20,6 +21,7 @@ def students_page():
             "first_name": "Jane",
             "last_name": "Doe",
             "course_code": "BSCS",
+            "college_code": "CCS",
             "year_level": 4,
             "gender": "Female"
         }
