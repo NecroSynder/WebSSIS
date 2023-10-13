@@ -38,15 +38,21 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for college in colleges %}
+                    {% for code, name in colleges %}
                     <tr>
-                        <td>{{ college.code }}</td>
-                        <td>{{ college.name }}</td>
+                        <td>{{ code }}</td>
+                        <td>{{ name }}</td>
                         <td>
-                            <a href="" class="btn btn-warning btn-sm" data-toggle="modal"
-                                data-target="#editCollegeModal">Edit</a>
-                            <a href="" onclick="return confirm('Are Sure Want To Deleted ?')"
-                                class="btn btn-danger btn-sm">Delete</a>
+                            <div class="d-flex justify-content-around">
+                                <!-- Edit button with class 'btn-edit' -->
+                                <button type="button" class="btn btn-warning btn-sm btn-edit" data-toggle="modal"
+                                    data-target="#editCollegeModal" data-id="{{ code }}">Edit</button>
+                                <!-- Delete button -->
+                                <form class="delete-form" action="{{ url_for('colleges.delete_college', code=code) }}" method="POST">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="btn btn-danger btn-sm" data-code="{{ code }}">Delete</button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                     {% endfor %}
@@ -59,4 +65,111 @@
 </div>
 </div>
 <!-- END OF STUDENTS -->
+<!-- Ajax -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+    $(".add-college-form").on('submit', function(e) {
+        e.preventDefault();  // prevent form submission
+        var code = $('#codeInput').val();  // get the college code
+        var name = $('#nameInput').val();  // get the college name
+        $.ajax({
+            url: "/colleges/add",
+            type: "POST",
+            data: {
+                code: code,
+                name: name
+            },
+            success: function(response) {
+                if (response.success) {
+                    $("#colleges-tab-pane").load("/colleges/");
+                    $('body').removeClass('modal-open');
+                    $('.modal-backdrop').remove();
+                } else {
+                    alert(response.message);  // display the warning message
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                // handle error here
+                console.error(textStatus, errorThrown);
+            }
+        });
+        $('#myCollegeModal').modal('hide');  // close the modal
+    });
+    
+</script>
+
+<script>
+    $(".delete-form").on('submit', function(e) {
+        e.preventDefault();  // prevent form submission
+        var code = $(this).find('button').data("code");  // get the college code
+        var csrf_token = $(this).find('input[name="csrf_token"]').val();  // get the CSRF token
+        $.ajax({
+            url: "/colleges/delete/" + code,
+            type: "POST",
+            data: {
+                csrf_token: csrf_token
+            },
+            success: function(response) {
+                $("#colleges-tab-pane").load("/colleges/");
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                // handle error here
+                console.error(textStatus, errorThrown);
+            }
+        });
+    });
+</script>
+
+<script>
+    $('.btn-edit').on('click', function() {
+        var id = $(this).data('id');
+        var action = "{{ url_for('colleges.edit_college', code='') }}" + id;
+        $('#editCollegeForm').attr('action', action);
+        $('#editCollegeId').val(id);
+    
+        $.ajax({
+            url: "/colleges/edit/" + id,
+            method: "GET",
+            success: function(response) {
+                console.log(response);  // log the raw response
+                var college = JSON.parse(response);
+                $('#editCode').val(college.code);
+                $('#editName').val(college.name);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error("AJAX request failed: ", textStatus, errorThrown);
+            }
+        });
+    });
+</script>
+
+<script>
+    $('#editCollegeForm').on('submit', function(e) {
+        e.preventDefault();
+        var formData = $(this).serialize();
+        var id = $('#editCollegeId').val();
+    
+        $.ajax({
+            url: "/colleges/edit/" + id,
+            type: "POST",
+            data: formData,
+            success: function(response) {
+                if (response.success) {
+                    $("#colleges-tab-pane").load("/colleges/");
+                    $('body').removeClass('modal-open');
+                    $('.modal-backdrop').remove();
+                } else {
+                    alert(response.message);  // display the warning message
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error("AJAX request failed: ", textStatus, errorThrown);
+            }
+        });
+    });    
+</script>
+
+
 {% endblock %}
+

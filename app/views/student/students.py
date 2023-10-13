@@ -1,48 +1,45 @@
-
 # students.py
 from flask import Blueprint, render_template, request, redirect, url_for
 from app.models.models_students import Students
-# from app.models.models_course import models_course
+
 
 students = Blueprint('students', __name__, template_folder='templates')
 
 @students.route("/students/")
 def students_page():
-    students = Students.all()
-    return render_template("students.html", students=students)
+    students_data = Students.get_all()
+    return render_template("students.html", students=students_data)
 
-@students.route("/students/add", methods=['POST'])
+@students.route("/students/add", methods=["POST"])
 def add_student():
-    # get data from form
-    id = request.form['id']
-    firstname = request.form['firstName']
-    lastname = request.form['lastName']
-    coursecode = request.form['courseCode']
-    year = request.form['yearLevel']
-    gender = request.form['gender']
+    id = request.form["id"]
+    first_name = request.form["firstName"]
+    last_name = request.form["lastName"]
+    college = request.form["college"]
+    course_code = request.form["courseCode"]
+    year_level = request.form["yearLevel"]
+    gender = request.form["gender"]
 
-    # create a new student
-    new_student = Students(id=id, firstname=firstname, lastname=lastname, coursecode=coursecode, year=year, gender=gender)
-    
-    # add the new student to the database
-    new_student.add()
+    Students.add(id, first_name, last_name, college, course_code, year_level, gender)
+    return redirect(url_for("students.students_page"))
 
-    # redirect to the students page
-    return redirect(url_for('students.students_page'))
+@students.route("/students/edit/<id>", methods=["GET", "POST"])
+def edit_student(id):
+    if request.method == "POST":
+        first_name = request.form["firstName"]
+        last_name = request.form["lastName"]
+        college = request.form["college"]
+        course_code = request.form["courseCode"]
+        year_level = request.form["yearLevel"]
+        gender = request.form["gender"]
 
-@students.route("/students/edit", methods=['POST'])
-def edit_student():
-    # get data from form
-    id = request.form['id']
-    firstname = request.form['firstName']
-    lastname = request.form['lastName']
-    coursecode = request.form['courseCode']
-    year = request.form['yearLevel']
-    gender = request.form['gender']
+        Students.update(id, first_name, last_name, college, course_code, year_level, gender)
+        return redirect(url_for("students.students_page"))
+    else:
+        student_data = Students.get_by_id(id)
+        return render_template("edit_student.html", student=student_data)
 
-    # update the student in the database
-    Students.update(id, firstname, lastname, coursecode, year, gender)
-
-    # redirect to the students page
-    return redirect(url_for('students.students_page'))
-
+@students.route("/students/delete/<id>", methods=["POST"])
+def delete_student(id):
+    Students.delete(id)
+    return redirect(url_for("students.students_page"))

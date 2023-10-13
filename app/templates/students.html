@@ -53,10 +53,11 @@
                         <td>{{ student.year_level }}</td>
                         <td>{{ student.gender }}</td>
                         <td>
-                            <a href="" class="btn btn-warning btn-sm" data-toggle="modal"
-                                data-target="#editStudentModal">Edit</a>
-                            <a href="" onclick="return confirm('Are Sure Want To Deleted ?')"
-                                class="btn btn-danger btn-sm">Delete</a>
+                            <a href="#" class="btn btn-warning btn-sm edit-btn" data-toggle="modal"
+                                data-target="#editStudentModal" data-id="{{ student.id }}">Edit</a>
+                            <form action="{{ url_for('students.delete_student', id=student.id) }}" method="POST" class="d-inline">
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are Sure Want To Deleted ?')">Delete</button>
+                            </form>
                         </td>
                     </tr>
                     {% endfor %}

@@ -1,25 +1,23 @@
-<!-- Enter New College Modal -->
+
+<!-- collegeModals.html -->
+<!-- Add College Modal -->
 <div id="myCollegeModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title text-primary" style="align-content: center;">Please Add
-                    New
-                    Student</h5>
+                <h5 class="modal-title text-primary" style="align-content: center;">Please Add New College</h5>
                 <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
-                </button>
             </div>
             <div class="modal-body">
-                <form action="" method="POST">
+                <form class="add-college-form" action="{{ url_for('colleges.add_college') }}" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="form-group mb-3">
                         <label>Code</label>
-                        <input type="text" name="name" class="form-control" id="exampleFormControlInput1"
-                            placeholder="Enter Code">
+                        <input type="text" name="code" class="form-control" id="codeInput" placeholder="Enter Code">
                     </div>
                     <div class="form-group mb-3">
                         <label>Name</label>
-                        <input type="text" name="email" class="form-control" id="exampleFormControlInput1"
-                            placeholder="Enter College Name">
+                        <input type="text" name="name" class="form-control" id="nameInput" placeholder="Enter College Name">
                     </div>
                     <button type="submit" class="btn btn-primary mb-3">Save</button>
                 </form>
@@ -28,31 +26,29 @@
     </div>
 </div>
 
+
 <!-- Edit College Modal -->
 <div id="editCollegeModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title text-primary" style="align-content: center;">
-                    Update
-                    College Details</h5>
+                <h5 class="modal-title text-primary" style="align-content: center;">Update College Details</h5>
                 <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
-                </button>
             </div>
             <div class="modal-body">
-                <form action="" method="POST">
-                    <input type="hidden" name="id" value="">
+                <form id="editCollegeForm" action="" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <input type="hidden" name="id" id="editCollegeId" value="">
                     <div class="form-group mb-3">
                         <label>Code</label>
-                        <input value="" type="text" name="name" class="form-control" id="exampleFormControlInput1"
-                            placeholder="Edit Code">
+                        <input id="editCode" value="" type="text" name="code" class="form-control" placeholder="Edit Code">
                     </div>
                     <div class="form-group mb-3">
                         <label>College Name</label>
-                        <input value="" type="text" name="email" class="form-control" id="exampleFormControlInput1"
-                            placeholder="Edit College Name">
+                        <input id="editName" value="" type="text" name="name" class="form-control" placeholder="Edit College Name">
                     </div>
                     <button type="submit" class="btn btn-success mb-3">Update</button>
+                </form>
                 </form>
             </div>
         </div>

@@ -1,3 +1,5 @@
+
+-- flask.sql
 DROP DATABASE IF EXISTS ssis;
 CREATE DATABASE IF NOT EXISTS ssis;
 use ssis;
@@ -24,8 +26,9 @@ id VARCHAR(9) NOT NULL,
 firstname VARCHAR(50) NOT NULL,
 lastname VARCHAR(20) NOT NULL,
 course_code VARCHAR(10) NOT NULL,
-year INT(1) NOT NULL,
+year INT NOT NULL,
 gender VARCHAR(10) NOT NULL,
 PRIMARY KEY(id),
 FOREIGN KEY(course_code) REFERENCES course(code)
 );
+

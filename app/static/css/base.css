@@ -1,3 +1,5 @@
+/* base.css */
+
 .div-title {
     text-align: center;
     color: #808080;
@@ -43,5 +45,9 @@
 }
 
 table {
-    margin-top: 40px;
+    margin-top: 10px;
+}
+
+.btn-edit {
+    margin-right: 10px;
 }

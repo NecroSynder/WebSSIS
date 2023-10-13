@@ -9,15 +9,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Bootstrap demo</title>
     <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/base.css') }}"
+    />
+    <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
       integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
       crossorigin="anonymous"
     />
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/base.css') }}"
-    />
+    
   </head>
 
   <body>
@@ -28,11 +29,11 @@
     </div>
 
     {% include 'navigation.html' %} 
-    {% block content %} {% endblock %}
+
 
     <!-- Footer -->
     <div
-      class="div-footer d-lg-flex justify-content-around position-absolute bottom-0 start-50 translate-middle-x w-100 bg-light"
+      class="div-footer d-lg-flex justify-content-around fixed-bottom w-100 bg-light"
     >
       <p>
         <i class="fa fa-users"></i> contribute on github
@@ -40,7 +41,6 @@
       </p>
       <p><i class="fa fa-balance-scale"></i> CCC151</p>
     </div>
-  </body>
 
   <!-- SCRIPTS -->
   <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
@@ -63,4 +63,6 @@
     integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
     crossorigin="anonymous"
   ></script>
+
+
 </html>
