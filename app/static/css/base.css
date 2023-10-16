@@ -1,3 +1,4 @@
+
 /* base.css */
 
 .div-title {
@@ -48,6 +49,15 @@ table {
     margin-top: 10px;
 }
 
-.btn-edit {
-    margin-right: 10px;
+.btn-spacing {
+    margin-right: 30px;
 }
+
+.body-container {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.table th:nth-child(1), .table td:nth-child(1) { width: 30%; }
+.table th:nth-child(2), .table td:nth-child(2) { width: 40%; }
+.table th:nth-child(3), .table td:nth-child(3) { width: 30%; }

@@ -28,7 +28,7 @@
             {%endfor%}
             {%endif%}
             {%endwith%}
-            <div class="table-container" style="max-height: 300px; overflow: auto;"> 
+            <div class="table-container">
                 <table class="table table-hover">
                     <thead>
                         <tr>
@@ -37,28 +37,32 @@
                             <th scope="col">Action</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        {% for code, name in colleges %}
-                        <tr>
-                            <td>{{ code }}</td>
-                            <td>{{ name }}</td>
-                            <td>
-                                <div class="d-flex justify-content-around">
-                                    <!-- Edit button with class 'btn-edit' -->
-                                    <button type="button" class="btn btn-warning btn-sm btn-edit" data-toggle="modal"
-                                        data-target="#editCollegeModal" data-id="{{ code }}">Edit</button>
-                                    <!-- Delete button -->
-                                    <form class="delete-form" action="{{ url_for('colleges.delete_college', code=code) }}" method="POST">
-                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                        <button type="submit" class="btn btn-danger btn-sm" data-code="{{ code }}">Delete</button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
                 </table>
-            </div>
+                <div class="body-container">
+                    <table class="table table-hover">
+                        <tbody>
+                            {% for code, name in colleges %}
+                            <tr>
+                                <td>{{ code }}</td>
+                                <td>{{ name }}</td>
+                                <td>
+                                    <div class="d-flex justify-content-start">
+                                        <!-- Edit button with class 'btn-edit' -->
+                                        <button type="button" class="btn btn-warning btn-sm btn-edit btn-spacing" data-toggle="modal"
+                                            data-target="#editCollegeModal" data-id="{{ code }}">Edit</button>
+                                        <!-- Delete button -->
+                                        <form class="delete-form" action="{{ url_for('colleges.delete_college', code=code) }}" method="POST">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                            <button type="submit" class="btn btn-danger btn-sm" data-code="{{ code }}">Delete</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>            
         </div>
         <!-- Content ends here-->
         <div class="col-sm-2"></div>
@@ -68,6 +72,36 @@
 <!-- END OF STUDENTS -->
 <!-- Ajax -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+    $(".add-college-form").on('submit', function(e) {
+        e.preventDefault();  // prevent form submission
+        var form_data = $(this).serialize();  // serialize form data
+        $.ajax({
+            url: "/colleges/add",
+            type: "POST",
+            data: form_data,
+            success: function(response) {
+                if (response.success) {
+                    $("#colleges-tab-pane").load("/colleges/");
+                    $('body').removeClass('modal-open');
+                    $('.modal-backdrop').remove();
+                } else {
+                    alert(response.message);  // display the warning message
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                // handle error here
+                console.error(textStatus, errorThrown);
+            }
+        }).done(function() {
+            // This function will be called when the AJAX request finishes
+            $('#codeInput').val('');
+            $('#nameInput').val('');
+        });
+        $('#myCollegeModal').modal('hide');  // close the modal
+    });    
+</script>
 
 <script>
     $(".delete-form").on('submit', function(e) {
@@ -101,9 +135,7 @@
         $.ajax({
             url: "/colleges/edit/" + id,
             method: "GET",
-            success: function(response) {
-                console.log(response);  // log the raw response
-                var college = JSON.parse(response);
+            success: function(college) {
                 $('#editCode').val(college.code);
                 $('#editName').val(college.name);
             },
@@ -112,36 +144,6 @@
             }
         });
     });
-</script>
-
-<script>
-    $(".add-college-form").on('submit', function(e) {
-        e.preventDefault();  // prevent form submission
-        var form_data = $(this).serialize();  // serialize form data
-        $.ajax({
-            url: "/colleges/add",
-            type: "POST",
-            data: form_data,
-            success: function(response) {
-                if (response.success) {
-                    $("#colleges-tab-pane").load("/colleges/");
-                    $('body').removeClass('modal-open');
-                    $('.modal-backdrop').remove();
-                } else {
-                    alert(response.message);  // display the warning message
-                }
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                // handle error here
-                console.error(textStatus, errorThrown);
-            }
-        }).done(function() {
-            // This function will be called when the AJAX request finishes
-            $('#codeInput').val('');
-            $('#nameInput').val('');
-        });
-        $('#myCollegeModal').modal('hide');  // close the modal
-    });    
 </script>
 
 <script>
@@ -172,9 +174,7 @@
             $('#editName').val('');
         });
     });
-    
 </script>
-
 
 {% endblock %}
 

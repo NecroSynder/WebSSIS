@@ -8,7 +8,7 @@ colleges = Blueprint('colleges', __name__, template_folder='templates')
 @colleges.route("/colleges/")
 def colleges_page():
     colleges_data = Colleges.get_all()
-    print(colleges_data)  # Print data to console
+    # print(colleges_data)  # Print data to console
     return render_template("colleges.html", colleges=colleges_data)
     
 @colleges.route("/colleges/add", methods=["POST"])

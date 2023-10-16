@@ -17,7 +17,7 @@ class Colleges:
         cur = mysql.connection.cursor()
         cur.execute("SELECT * FROM college")  
         colleges = cur.fetchall()
-        print(colleges)  # Print data to console
+        # print(colleges)  # Print data to console
         cur.close()
         return colleges
     
