@@ -1,5 +1,5 @@
 
--- flask.sql
+-- mySQL query
 DROP DATABASE IF EXISTS ssis;
 CREATE DATABASE IF NOT EXISTS ssis;
 use ssis;

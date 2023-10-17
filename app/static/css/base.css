@@ -50,16 +50,22 @@ table {
 }
 
 .btn-spacing {
-    margin-right: 30px;
+    margin-right: 10px;
 }
 
-
-
-.body-container {
+.table {
+    width: 100%;
     max-height: 300px;
     overflow-y: auto;
+    display: block;
 }
 
-.table th:nth-child(1), .table td:nth-child(1) { width: 30%; }
+.table th {
+position: sticky;
+top: 0;
+background: #fff;
+}
+
+.table th:nth-child(1), .table td:nth-child(1) { width: 10%; }
 .table th:nth-child(2), .table td:nth-child(2) { width: 40%; }
 .table th:nth-child(3), .table td:nth-child(3) { width: 30%; }

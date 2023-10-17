@@ -1,38 +1,71 @@
 
 # courses.py
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, jsonify
 from app.models.models_courses import Courses
 from app.models.models_colleges import Colleges
+
 
 courses = Blueprint('courses', __name__, template_folder='templates')
 
 @courses.route("/courses/")
 def courses_page():
     courses_data = Courses.get_all()
-    return render_template("courses.html", courses=courses_data)
+    colleges_data = Colleges.get_all()
+    return render_template("courses.html", courses=courses_data, colleges=colleges_data)
 
-@courses.route("/courses/add", methods=["POST"])
+@courses.route('/add', methods=['POST'])
 def add_course():
-    id = request.form["id"]
-    name = request.form["name"]
-    description = request.form["description"]
+    # Get form data
+    code = request.form.get('code')
+    name = request.form.get('name')
+    college_code = request.form.get('college_code')
+    
+    # Check if the course already exists
+    existing_course = Courses.get_by_code(code)
+    if existing_course:
+        return jsonify({'success': False, 'message': 'A course with this code already exists.'})
 
-    Courses.add(id, name, description)
-    return redirect(url_for("courses.courses_page"))
+    # Call the add() method from the Courses model
+    try:
+        Courses.add(code, name, college_code)
+        return jsonify({'success': True})
+    except:
+        return jsonify({'success': False, 'message': 'Error adding course'})
 
-@courses.route("/courses/edit/<id>", methods=["GET", "POST"])
-def edit_course(id):
-    if request.method == "POST":
-        name = request.form["name"]
-        description = request.form["description"]
 
-        Courses.update(id, name, description)
-        return redirect(url_for("courses.courses_page"))
-    else:
-        course_data = Courses.get_by_id(id)
-        return render_template("edit_course.html", course=course_data)
+@courses.route('/delete/<code>', methods=['POST'])
+def delete_course(code):
+    try:
+        # Call the delete() method from the Courses model
+        Courses.delete(code)
+        return jsonify({'success': True})
+    except:
+        return jsonify({'success': False, 'message': 'Error deleting course'})
 
-@courses.route("/courses/delete/<id>", methods=["POST"])
-def delete_course(id):
-    Courses.delete(id)
-    return redirect(url_for("courses.courses_page"))
+import logging
+
+@courses.route('/edit/<code>', methods=['POST'])
+def edit_course(code):
+    # Get form data
+    new_code = request.form.get('code')
+    new_name = request.form.get('name')
+    new_college_code = request.form.get('college_code')
+
+    # Check if a different course with the new code already exists
+    existing_course = Courses.get_by_code(new_code)
+    if existing_course and existing_course.code != code:
+        return jsonify({'success': False, 'message': 'A different course with this code already exists.'})
+
+    # Update the course in the database
+    try:
+        Courses.update(code, new_code, new_name, new_college_code)
+        return jsonify({'success': True})
+    except Exception as e:
+        logging.exception("Exception occurred")
+        return jsonify({'success': False, 'message': 'Error updating course'})
+
+
+
+
+
+

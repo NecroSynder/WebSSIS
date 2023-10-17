@@ -10,9 +10,9 @@
         <div class="col-sm-2"></div>
         <!-- content goes here -->
         <div class="col-sm-8">
-            <h2>Course List <button class="btn btn-primary float-end" data-toggle="modal"
-                    data-target="#myCourseModal">Add
-                    Course</button></h2>
+            <h2>Course List 
+                <button class="btn btn-primary float-end" data-toggle="modal" data-target="#myCourseModal">Add Course</button>
+            </h2>
 
             {%with messages = get_flashed_messages()%}
             {%if messages%}
@@ -28,37 +28,136 @@
             {%endfor%}
             {%endif%}
             {%endwith%}
-
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th scope="col">Code</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">College Code</th>
-                        <th scope="col">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for course in courses %}
-                    <tr>
-                        <td> {{course.code}} </td>
-                        <td> {{course.name}} </td>
-                        <td> {{course.college_code}} </td>
-                        <td>
-                            <a href="" class="btn btn-warning btn-sm" data-toggle="modal"
-                                data-target="#editCourseModal">Edit</a>
-                            <a href="" onclick="return confirm('Are Sure Want To Deleted ?')"
-                                class="btn btn-danger btn-sm">Delete</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <div id="courses-tab-pane">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">Code</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">College Code</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for course in courses %}
+                        <tr>
+                            <td data-code="{{ course[0] }}">{{ course[0] }}</td>
+                            <td data-name="{{ course[1] }}">{{ course[1] }}</td>
+                            <td data-college_code="{{ course[2] }}">{{ course[2] }}</td>
+                            <td>
+                                <div class="d-flex justify-content-start">
+                                    <!-- Edit button with class 'btn-edit' -->
+                                    <button type="button" class="btn btn-warning btn-sm btn-edit btn-spacing" data-toggle="modal"
+                                        data-target="#editCourseModal" data-code="{{ course[0] }}">Edit</button>
+                                    <!-- Delete button -->
+                                    <form class="delete-form" action="{{ url_for('courses.delete_course', code=course[0]) }}" method="POST">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <button type="submit" class="btn btn-danger btn-sm" data-code="{{ course[0] }}">Delete</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
-        <!-- Content ends here-->
-        <div class="col-sm-2"></div>
     </div>
 </div>
 </div>
 <!-- END OF STUDENTS -->
+
+<!-- Scripts -->
+
+<script>
+    $("#editCourseForm").on('submit', function(e) {
+        e.preventDefault();
+        $.ajax({
+            url: $(this).attr('action'),
+            type: 'POST',
+            data: $(this).serialize(),
+            success: function(response) {
+                if (response.success) {
+                    $("#courses-tab-pane").load("/courses/");
+                    $('body').removeClass('modal-open');
+                    $('.modal-backdrop').remove();
+                } else {
+                    alert(response.message);
+                }
+            }
+        });
+    });     
+</script>
+
+<script>
+    $("#addCourseForm").on('submit', function(e) {
+        e.preventDefault();
+        $.ajax({
+            url: $(this).attr('action'),
+            type: 'POST',
+            data: $(this).serialize(),
+            success: function(response) {
+                if (response.success) {
+                    $("#courses-tab-pane").load("/courses/");
+                    $('body').removeClass('modal-open');
+                    $('.modal-backdrop').remove();
+                } else {
+                    alert(response.message);
+                }
+            }
+        });
+    });
+</script>
+
+<script>
+    function updateCoursesTable() {
+        $.get('/courses/', function(data) {
+            // Replace the current table with the updated one
+            $('#coursesTable').replaceWith($(data).find('#coursesTable'));
+        });
+    }
+</script>
+
+<script>
+    $(".delete-form").on('submit', function(e) {
+        e.preventDefault();
+        var form = $(this);
+        $.ajax({
+            url: form.attr('action'),
+            type: 'POST',
+            data: form.serialize(),
+            success: function(response) {
+                if (response.success) {
+                    $("#courses-tab-pane").load("/courses/");
+                } else {
+                    alert(response.message);
+                }
+            }
+        });
+    });
+</script>
+
+<script>
+    $('#editCourseModal').on('show.bs.modal', function(event) {
+        var button = $(event.relatedTarget); // Button that triggered the modal
+        var code = button.data('code'); // Extract info from data-* attributes
+        var formAction = "/edit/" + code;
+        
+        // Get the row that the button is in
+        var row = button.closest('tr');
+        
+        // Get the course data from the data-* attributes
+        var name = row.find('td[data-name]').data('name');
+        var college_code = row.find('td[data-college_code]').data('college_code');
+        
+        // Populate the form fields with the course data
+        $('#editCode').val(code);  // correct ID for the code field
+        $('#editName').val(name);  // correct ID for the name field
+        $('#editCollegeCode').val(college_code);
+        
+        $('#editCourseForm').attr('action', formAction);
+    }); 
+</script>
+
+
 {% endblock %}

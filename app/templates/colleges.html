@@ -37,42 +37,36 @@
                             <th scope="col">Action</th>
                         </tr>
                     </thead>
+                    <tbody>
+                        {% for college in colleges %}
+                        <tr>
+                            <td>{{ college[0] }}</td>
+                            <td>{{ college[1] }}</td>
+                            <td>
+                                <div class="d-flex justify-content-start">
+                                    <!-- Edit button with class 'btn-edit' -->
+                                    <button type="button" class="btn btn-warning btn-sm btn-edit btn-spacing" data-toggle="modal"
+                                        data-target="#editCollegeModal" data-id="{{ college[0] }}">Edit</button>
+                                    <!-- Delete button -->
+                                    <form class="delete-form" action="{{ url_for('colleges.delete_college', code=college[0]) }}" method="POST">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <button type="submit" class="btn btn-danger btn-sm" data-code="{{ college[0] }}">Delete</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
                 </table>
-                <div class="body-container">
-                    <table class="table table-hover">
-                        <tbody>
-                            {% for code, name in colleges %}
-                            <tr>
-                                <td>{{ code }}</td>
-                                <td>{{ name }}</td>
-                                <td>
-                                    <div class="d-flex justify-content-start">
-                                        <!-- Edit button with class 'btn-edit' -->
-                                        <button type="button" class="btn btn-warning btn-sm btn-edit btn-spacing" data-toggle="modal"
-                                            data-target="#editCollegeModal" data-id="{{ code }}">Edit</button>
-                                        <!-- Delete button -->
-                                        <form class="delete-form" action="{{ url_for('colleges.delete_college', code=code) }}" method="POST">
-                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                            <button type="submit" class="btn btn-danger btn-sm" data-code="{{ code }}">Delete</button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
             </div>            
         </div>
-        <!-- Content ends here-->
-        <div class="col-sm-2"></div>
     </div>
 </div>
 </div>
 <!-- END OF STUDENTS -->
 <!-- Ajax -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
+<!-- Add college form script -->
 <script>
     $(".add-college-form").on('submit', function(e) {
         e.preventDefault();  // prevent form submission
