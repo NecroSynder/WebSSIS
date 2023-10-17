@@ -33,7 +33,7 @@ def edit_college(code):
             if existing_college:
                 return jsonify(success=False, message="A college with this code already exists.")
         Colleges.update(code, new_code, name)
-        return redirect(url_for("colleges.colleges_page"))
+        return jsonify(success=True, message="College updated successfully")
     else:
         college_data = Colleges.get_by_id(code)
         return jsonify(code=college_data.code, name=college_data.name)
@@ -43,6 +43,3 @@ def edit_college(code):
 def delete_college(code):
     Colleges.delete(code)
     return jsonify(success=True)
-
-
-

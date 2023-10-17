@@ -1,6 +1,8 @@
+
 # courses.py
 from flask import Blueprint, render_template, request, redirect, url_for
 from app.models.models_courses import Courses
+from app.models.models_colleges import Colleges
 
 courses = Blueprint('courses', __name__, template_folder='templates')
 
