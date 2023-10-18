@@ -31,15 +31,21 @@ class Students:
         cur.close()
 
     @staticmethod
-    def update(id, first_name, last_name, course_code, year_level, gender):
+    def update(old_id, new_id, first_name, last_name, course_code, year_level, gender):
         cur = mysql.connection.cursor()
         cur.execute(
-            "UPDATE student SET firstname=%s, lastname=%s, course_code=%s, year=%s, gender=%s WHERE id=%s",
-            (first_name, last_name, course_code, year_level, gender, id),
+            "UPDATE student SET id=%s, firstName=%s, lastName=%s, course_code=%s, year=%s, gender=%s WHERE id=%s",
+            (new_id, first_name, last_name, course_code, year_level, gender, old_id),
         )
+        affected_rows = cur.rowcount
         mysql.connection.commit()
         cur.close()
+        return affected_rows > 0
 
+
+
+
+ 
     @staticmethod
     def delete(id):
         cur = mysql.connection.cursor()

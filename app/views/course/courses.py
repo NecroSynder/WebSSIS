@@ -13,7 +13,7 @@ def courses_page():
     colleges_data = Colleges.get_all()
     return render_template("courses.html", courses=courses_data, colleges=colleges_data)
 
-@courses.route('/add', methods=['POST'])
+@courses.route('/courses/add', methods=['POST'])
 def add_course():
     # Get form data
     code = request.form.get('code')
@@ -33,7 +33,7 @@ def add_course():
         return jsonify({'success': False, 'message': 'Error adding course'})
 
 
-@courses.route('/delete/<code>', methods=['POST'])
+@courses.route('/courses/delete/<code>', methods=['POST'])
 def delete_course(code):
     try:
         # Call the delete() method from the Courses model

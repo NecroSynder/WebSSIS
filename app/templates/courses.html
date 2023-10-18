@@ -89,6 +89,28 @@
     });     
 </script>
 
+<script> 
+    $('#editCourseModal').on('show.bs.modal', function(event) {
+        var button = $(event.relatedTarget); // Button that triggered the modal
+        var code = button.data('code'); // Extract info from data-* attributes
+        var formAction = "/edit/" + code;
+        
+        // Get the row that the button is in
+        var row = button.closest('tr');
+        
+        // Get the course data from the data-* attributes
+        var name = row.find('td[data-name]').data('name');
+        var college_code = row.find('td[data-college_code]').data('college_code');
+        
+        // Populate the form fields with the course data
+        $('#editCode').val(code);  // correct ID for the code field
+        $('#editName').val(name);  // correct ID for the name field
+        $('#editCollegeCode').val(college_code);
+        
+        $('#editCourseForm').attr('action', formAction);
+    }); 
+</script>
+
 <script>
     $("#addCourseForm").on('submit', function(e) {
         e.preventDefault();
@@ -135,28 +157,6 @@
             }
         });
     });
-</script>
-
-<script>
-    $('#editCourseModal').on('show.bs.modal', function(event) {
-        var button = $(event.relatedTarget); // Button that triggered the modal
-        var code = button.data('code'); // Extract info from data-* attributes
-        var formAction = "/edit/" + code;
-        
-        // Get the row that the button is in
-        var row = button.closest('tr');
-        
-        // Get the course data from the data-* attributes
-        var name = row.find('td[data-name]').data('name');
-        var college_code = row.find('td[data-college_code]').data('college_code');
-        
-        // Populate the form fields with the course data
-        $('#editCode').val(code);  // correct ID for the code field
-        $('#editName').val(name);  // correct ID for the name field
-        $('#editCollegeCode').val(college_code);
-        
-        $('#editCourseForm').attr('action', formAction);
-    }); 
 </script>
 
 

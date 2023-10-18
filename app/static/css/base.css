@@ -69,3 +69,43 @@ background: #fff;
 .table th:nth-child(1), .table td:nth-child(1) { width: 10%; }
 .table th:nth-child(2), .table td:nth-child(2) { width: 40%; }
 .table th:nth-child(3), .table td:nth-child(3) { width: 30%; }
+
+
+.students-table thead {
+    position: sticky;
+    top: 0;
+    background: #fff;
+}
+
+.students-table {
+    width: 100%;
+    max-height: 300px;
+    overflow-y: auto;
+    display: block;
+}
+
+.students-table th:nth-child(1), .students-table td:nth-child(1) {width: 10%}
+.students-table th:nth-child(2), .students-table td:nth-child(2) {width: 12%}
+.students-table th:nth-child(3), .students-table td:nth-child(3) {width: 10%}
+.students-table th:nth-child(4), .students-table td:nth-child(4) {width: 10%}
+.students-table th:nth-child(5), .students-table td:nth-child(5) {width: 10%}
+.students-table th:nth-child(6), .students-table td:nth-child(6) {width: 10%}
+.students-table th:nth-child(7), .students-table td:nth-child(7) {width: 10%}
+
+
+.college-table {
+    width: 100%;
+    max-height: 300px;
+    overflow-y: auto;
+    display: block;
+}
+
+.college-table thead {
+    position: sticky;
+    top: 0;
+    background: #fff;
+}
+
+.college-table th:nth-child(1), .college-table td:nth-child(1) {width: 30%}
+.college-table th:nth-child(2), .college-table td:nth-child(2) {width: 60%}
+.college-table th:nth-child(3), .college-table td:nth-child(3) {width: 0%}
