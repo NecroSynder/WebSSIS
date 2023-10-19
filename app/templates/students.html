@@ -94,11 +94,11 @@
 <script>
     $("#editStudentForm").on('submit', function(e) {
         e.preventDefault();
-        var formData = $(this).serialize();
-        var id = $('#editStudentId').val();
-        
+        var form = $(this);
+        var formData = form.serialize();
+    
         $.ajax({
-            url: "/students/edit/" + id,
+            url: form.attr('action'),
             type: "POST",
             data: formData,
             success: function(response) {
@@ -116,7 +116,12 @@
         });
     });
     
-    $('.students-table').on('click', '.btn-edit', function() {
+    $('#editStudentModal').on('hidden.bs.modal', function (e) {
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').remove();
+    });
+
+    $('.students-table').on('click', '.edit-btn', function() {
         var row = $(this).closest('tr');
         
         // Get the current data of the student from the DOM
@@ -129,9 +134,10 @@
         
         // Populate the fields of the edit form with the current data of the student
         $('#editStudentModal input[name="id"]').val(id);
+        $('#editStudentModal input[name="old_id"]').val(id);
         $('#editStudentModal input[name="firstName"]').val(firstName);
         $('#editStudentModal input[name="lastName"]').val(lastName);
-        $('#editStudentModal input[name="courseCode"]').val(courseCode);
+        $('#editStudentModal select[name="courseCode"]').val(courseCode);
         $('#editStudentModal input[name="yearLevel"]').val(yearLevel);
         
         // Select the correct gender radio button

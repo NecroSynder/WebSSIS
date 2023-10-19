@@ -56,10 +56,14 @@ def edit_student():
     course_code = request.form["courseCode"]
     year_level = request.form["yearLevel"]
     gender = request.form["gender"]
+    print(f"Attempting to update student with old_id: {old_id} to new_id: {new_id}")
     if Students.update(old_id, new_id, first_name, last_name, course_code, year_level, gender):
+        print("Student updated successfully")
         return jsonify({'success': True})
     else:
+        print("Error updating student")
         return jsonify({'success': False, 'message': 'Error updating student'})
+
 
 
 
