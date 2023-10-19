@@ -42,13 +42,16 @@ class Students:
         cur.close()
         return affected_rows > 0
 
-
-
-
- 
     @staticmethod
     def delete(id):
         cur = mysql.connection.cursor()
         cur.execute("DELETE FROM student WHERE id=%s", (id,))
+        mysql.connection.commit()
+        cur.close()
+
+    @staticmethod
+    def delete_by_course(course_code):
+        cur = mysql.connection.cursor()
+        cur.execute("DELETE FROM student WHERE course_code=%s", (course_code,))
         mysql.connection.commit()
         cur.close()

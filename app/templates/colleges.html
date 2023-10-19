@@ -120,7 +120,7 @@
 </script>
 
 <script>
-    $('.btn-edit').on('click', function() {
+    $('.college-table').on('click', '.btn-edit', function() {
         var id = $(this).data('id');
         var action = "{{ url_for('colleges.edit_college', code='') }}" + id;
         $('#editCollegeForm').attr('action', action);
@@ -132,15 +132,15 @@
             success: function(college) {
                 $('#editCode').val(college.code);
                 $('#editName').val(college.name);
+                // Show the modal after the form fields have been populated
+                $('#editCollegeModal').modal('show');
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.error("AJAX request failed: ", textStatus, errorThrown);
             }
         });
     });
-</script>
 
-<script>
     $('#editCollegeForm').on('submit', function(e) {
         e.preventDefault();
         var formData = $(this).serialize();

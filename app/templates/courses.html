@@ -87,13 +87,11 @@
             }
         });
     });     
-</script>
 
-<script> 
     $('#editCourseModal').on('show.bs.modal', function(event) {
         var button = $(event.relatedTarget); // Button that triggered the modal
         var code = button.data('code'); // Extract info from data-* attributes
-        var formAction = "/edit/" + code;
+        var formAction = "/courses/edit/" + code;
         
         // Get the row that the button is in
         var row = button.closest('tr');

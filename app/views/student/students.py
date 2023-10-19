@@ -45,7 +45,7 @@ def delete_student(id):
     except:
         return jsonify({'success': False, 'message': 'Error deleting student'})
 
-@students.route("/edit", methods=["POST"])
+@students.route("/students/edit", methods=["POST"])
 def edit_student():
     print("Edit route hit")  # Print statement to check if route is hit
     print(request.form)  # Print the request.form data

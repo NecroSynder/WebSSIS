@@ -44,7 +44,7 @@ def delete_course(code):
 
 import logging
 
-@courses.route('/edit/<code>', methods=['POST'])
+@courses.route('/courses/edit/<code>', methods=['POST'])
 def edit_course(code):
     # Get form data
     new_code = request.form.get('code')

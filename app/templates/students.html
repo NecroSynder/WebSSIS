@@ -92,14 +92,15 @@
 </script>
 
 <script>
-    
     $("#editStudentForm").on('submit', function(e) {
         e.preventDefault();
-        console.log($(this).serialize());  // Log the serialized form data
+        var formData = $(this).serialize();
+        var id = $('#editStudentId').val();
+        
         $.ajax({
-            url: $(this).attr('action'),
-            type: 'POST',
-            data: $(this).serialize(),
+            url: "/students/edit/" + id,
+            type: "POST",
+            data: formData,
             success: function(response) {
                 if (response.success) {
                     $("#students-tab-pane").load("/students/");
@@ -108,13 +109,16 @@
                 } else {
                     alert(response.message);
                 }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error("AJAX request failed: ", textStatus, errorThrown);
             }
         });
     });
-
-    $(".edit-btn").on('click', function() {
-        var row = $(this).closest('tr');
     
+    $('.students-table').on('click', '.btn-edit', function() {
+        var row = $(this).closest('tr');
+        
         // Get the current data of the student from the DOM
         var id = row.find('td:nth-child(1)').text();
         var firstName = row.find('td:nth-child(2)').text();
@@ -122,9 +126,6 @@
         var courseCode = row.find('td:nth-child(4)').text();
         var yearLevel = row.find('td:nth-child(5)').text();
         var gender = row.find('td:nth-child(6)').text();
-        var old_id = row.find('td:nth-child(1)').text();
-        $('#editStudentModal input[name="old_id"]').val(old_id);
-
         
         // Populate the fields of the edit form with the current data of the student
         $('#editStudentModal input[name="id"]').val(id);
@@ -132,19 +133,18 @@
         $('#editStudentModal input[name="lastName"]').val(lastName);
         $('#editStudentModal input[name="courseCode"]').val(courseCode);
         $('#editStudentModal input[name="yearLevel"]').val(yearLevel);
-    
+        
         // Select the correct gender radio button
         if (gender === 'Male') {
             $('#editStudentModal #male').prop('checked', true);
         } else if (gender === 'Female') {
             $('#editStudentModal #female').prop('checked', true);
         }
-    });
     
-
+        // Show the modal after the form fields have been populated
+        $('#editStudentModal').modal('show');
+    });
 </script>
-
-
 
 <script>
     function updateStudentsTable() {

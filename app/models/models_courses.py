@@ -47,11 +47,23 @@ class Courses:
         mysql.connection.commit()
         cur.close()
 
-
-
     @staticmethod
     def delete(code):
         cur = mysql.connection.cursor()
         cur.execute("DELETE FROM course WHERE code=%s", (code,))
+        mysql.connection.commit()
+        cur.close()
+
+    @staticmethod
+    def delete_by_course(course_code):
+        cur = mysql.connection.cursor()
+        cur.execute("DELETE FROM student WHERE course_code=%s", (course_code,))
+        mysql.connection.commit()
+        cur.close()
+        
+    @staticmethod
+    def delete_by_college(college_code):
+        cur = mysql.connection.cursor()
+        cur.execute("DELETE FROM course WHERE college_code=%s", (college_code,))
         mysql.connection.commit()
         cur.close()
