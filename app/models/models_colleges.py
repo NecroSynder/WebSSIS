@@ -83,14 +83,6 @@ class Colleges:
 
         finally:
             cur.close()
-    
-    # @staticmethod
-    # def delete(code):
-    #     cur = mysql.connection.cursor()
-    #     cur.execute("DELETE FROM college WHERE code=%s", (code,))  # Changed from 'colleges' to 'college'
-    #     mysql.connection.commit()
-    #     cur.close()
-
 
     @staticmethod
     def delete_by_college(college_code):
@@ -98,3 +90,13 @@ class Colleges:
         cur.execute("DELETE FROM course WHERE college_code=%s", (college_code,))
         mysql.connection.commit()
         cur.close()
+        
+    
+    @staticmethod
+    def search(term):
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM college WHERE code LIKE %s OR name LIKE %s", ('%' + term + '%', '%' + term + '%',))
+        data = cur.fetchall()
+        cur.close()
+        return data
+

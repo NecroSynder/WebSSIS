@@ -18,7 +18,7 @@
       integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
       crossorigin="anonymous"
     />
-    
+    <meta name="csrf-token" content="{{ csrf_token() }}">
   </head>
 
   <body>
@@ -37,13 +37,13 @@
     >
       <p>
         <i class="fa fa-users"></i> contribute on github
-        <a href="https://github.com/NecroSynder" target="_blank">SSIS</a>
+        <a href="https://github.com/NecroSynder/WebSSIS.git" target="_blank">SSIS</a>
       </p>
-      <p><i class="fa fa-balance-scale"></i> CCC151</p>
+      <p><i class="fa fa-balance-scale"></i>     BSCS-3  </p>
     </div>
 
   <!-- SCRIPTS -->
-  <!-- <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script> -->
+  <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
   <script
     defer
     src="https://use.fontawesome.com/releases/v5.0.1/js/all.js"

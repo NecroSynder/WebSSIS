@@ -42,3 +42,16 @@ def edit_college(code):
 def delete_college(code):
     Colleges.delete(code)
     return jsonify(success=True)
+
+@colleges.route("/colleges/search", methods=["GET"])
+def search_colleges():
+    search_term = request.args.get("search_term", "").strip()
+    if not search_term:
+        results = Colleges.get_all()  # get all colleges if search_term is empty
+    else:
+        results = Colleges.search(search_term)  # search colleges if search_term is not empty
+    return jsonify(results)
+
+
+
+

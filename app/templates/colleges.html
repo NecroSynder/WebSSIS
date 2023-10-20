@@ -10,10 +10,20 @@
         <div class="col-sm-2"></div>
         <!-- content goes here -->
         <div class="col-sm-8">
-            <h2>College List <button class="btn btn-primary float-end" data-toggle="modal"
-                    data-target="#myCollegeModal">Add
-                    College</button></h2>
-
+            <div class="d-flex justify-content-between align-items-center">
+                <div><h2>College List</h2></div>
+                <div>
+                    <form id="search-form" action="/colleges/search" method="get">
+                        <div class="input-group">
+                            <input type="search" name="search_term" id="search-input" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+                            <button type="submit" class="btn btn-outline-primary">search</button>
+                        </div>
+                    </form>                                        
+                </div>
+                <div>
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#myCollegeModal">Add College</button>
+                </div>
+            </div>
             {%with messages = get_flashed_messages()%}
             {%if messages%}
             {% for message in messages %}
@@ -169,5 +179,67 @@
         });
     });
 </script>
+
+<script>
+    $("#search-form").on('submit', function(e) {
+        e.preventDefault();  // prevent form submission
+    
+        var search_term = $("#search-input").val();
+        if(search_term.trim() === "") {
+            // Fetch all colleges when search input field is empty
+            $.ajax({
+                url: "/colleges/search",
+                type: "GET",
+                success: function(results) {
+                    updateTable(results);
+                },
+                error: function(xhr, textStatus, error) {
+                    // handle the error response
+                }
+            });
+        } else {
+            // Fetch search results
+            $.ajax({
+                url: "/colleges/search",
+                type: "GET",
+                data: { search_term: search_term },
+                success: function(results) {
+                    updateTable(results);
+                },
+                error: function(xhr, textStatus, error) {
+                    // handle the error response
+                }
+            });
+        }
+    });      
+
+    function updateTable(results) {
+        // Clear the table
+        $(".college-table tbody").empty();
+    
+        // Get the CSRF token
+        var csrf_token = $('meta[name="csrf-token"]').attr('content');
+    
+        // Add a new row for each result
+        $.each(results, function(i, college) {
+            var row = $('<tr>').append(
+                $('<td>').text(college[0]),
+                $('<td>').text(college[1]),
+                $('<td>').html(`
+                    <div class="d-flex justify-content-start">
+                        <button type="button" class="btn btn-warning btn-sm btn-edit btn-spacing" data-toggle="modal" data-target="#editCollegeModal" data-id="${college[0]}">Edit</button>
+                        <form class="delete-form" action="/colleges/delete/${college[0]}" method="POST">
+                            <input type="hidden" name="csrf_token" value="${csrf_token}">
+                            <button type="submit" class="btn btn-danger btn-sm" data-code="${college[0]}">Delete</button>
+                        </form>
+                    </div>
+                `)
+            );
+            $(".college-table tbody").append(row);
+        });
+    }
+    
+    
+</script> 
 
 {% endblock %}
