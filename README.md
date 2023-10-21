@@ -1,3 +1,3 @@
 # WebSSIS
 
-Assignment for CCC151 and 181
+Flask Practice for CCC181
