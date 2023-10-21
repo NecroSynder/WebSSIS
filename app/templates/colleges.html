@@ -184,7 +184,21 @@
     $('#editCollegeModal').on('hidden.bs.modal', function (e) {
         $('body').removeClass('modal-open');
         $('.modal-backdrop').remove();
+    
+        // Clear the form fields
+        $('#editCollegeCode').val('');
+        $('#editCollegeName').val('');
     });    
+
+    $('#editCollegeModal').on('hidden.bs.modal', function (e) {
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').remove();
+    
+        // Clear the form fields
+        $('#editCollegeCode').val('');
+        $('#editCollegeName').val('');
+    });
+        
 </script>
 
 <script>
