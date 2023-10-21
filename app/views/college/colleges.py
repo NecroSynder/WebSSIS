@@ -51,7 +51,3 @@ def search_colleges():
     else:
         results = Colleges.search(search_term)  # search colleges if search_term is not empty
     return jsonify(results)
-
-
-
-

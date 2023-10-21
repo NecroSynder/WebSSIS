@@ -131,26 +131,28 @@
 
 <script>
     $('.college-table').on('click', '.btn-edit', function() {
-        var id = $(this).data('id');
+        var row = $(this).closest('tr');
+    
+        // Get the college code from the first cell of the clicked row
+        var collegeCode = row.find('td:nth-child(1)').text();
+        var collegeName = row.find('td:nth-child(2)').text();
+    
+        // Use the college code as the ID
+        var id = collegeCode;
+    
+        // Set the action for the form
         var action = "{{ url_for('colleges.edit_college', code='') }}" + id;
         $('#editCollegeForm').attr('action', action);
         $('#editCollegeId').val(id);
     
-        $.ajax({
-            url: "/colleges/edit/" + id,
-            method: "GET",
-            success: function(college) {
-                $('#editCode').val(college.code);
-                $('#editName').val(college.name);
-                // Show the modal after the form fields have been populated
-                $('#editCollegeModal').modal('show');
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.error("AJAX request failed: ", textStatus, errorThrown);
-            }
-        });
+        // Populate the fields of the edit form with the current data of the college
+        $('#editCollegeCode').val(collegeCode);
+        $('#editCollegeName').val(collegeName);
+    
+        // Show the modal after the form fields have been populated
+        $('#editCollegeModal').modal('show');
     });
-
+    
     $('#editCollegeForm').on('submit', function(e) {
         e.preventDefault();
         var formData = $(this).serialize();
@@ -174,10 +176,15 @@
             }
         }).done(function() {
             // This function will be called when the AJAX request finishes
-            $('#editCode').val('');
-            $('#editName').val('');
+            $('#editCollegeCode').val('');
+            $('#editCollegeName').val('');
         });
     });
+    
+    $('#editCollegeModal').on('hidden.bs.modal', function (e) {
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').remove();
+    });    
 </script>
 
 <script>

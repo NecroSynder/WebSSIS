@@ -53,22 +53,23 @@ table {
     margin-right: 10px;
 }
 
-.table {
+.courses-table {
     width: 100%;
     max-height: 300px;
     overflow-y: auto;
     display: block;
 }
 
-.table th {
+.courses-table th {
 position: sticky;
 top: 0;
 background: #fff;
 }
 
-.table th:nth-child(1), .table td:nth-child(1) { width: 10%; }
-.table th:nth-child(2), .table td:nth-child(2) { width: 40%; }
-.table th:nth-child(3), .table td:nth-child(3) { width: 30%; }
+.courses-table th:nth-child(1), .courses-table td:nth-child(1) { width: 10%; }
+.courses-table th:nth-child(2), .courses-table td:nth-child(2) { width: 40%; }
+.courses-table th:nth-child(3), .courses-table td:nth-child(3) { width: 30%; }
+.courses-table th:nth-child(3), .courses-table td:nth-child(4) { width: 10%; }
 
 
 .students-table thead {

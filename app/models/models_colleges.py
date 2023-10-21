@@ -99,4 +99,3 @@ class Colleges:
         data = cur.fetchall()
         cur.close()
         return data
-

@@ -63,9 +63,3 @@ def edit_course(code):
     except Exception as e:
         logging.exception("Exception occurred")
         return jsonify({'success': False, 'message': 'Error updating course'})
-
-
-
-
-
-

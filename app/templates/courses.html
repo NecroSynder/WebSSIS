@@ -29,7 +29,7 @@
             {%endif%}
             {%endwith%}
             <div id="courses-tab-pane">
-                <table class="table table-hover">
+                <table class="table table-hover courses-table">
                     <thead>
                         <tr>
                             <th scope="col">Code</th>
@@ -70,6 +70,27 @@
 <!-- Scripts -->
 
 <script>
+    $('.courses-table').on('click', '.btn-edit', function() {
+        var row = $(this).closest('tr');
+
+        // Get the course data from the table cells
+        var code = row.find('td:nth-child(1)').text();
+        var name = row.find('td:nth-child(2)').text();
+        var college_code = row.find('td:nth-child(3)').text();
+
+        // Set the action for the form
+        var formAction = "/courses/edit/" + code;
+        $('#editCourseForm').attr('action', formAction);
+
+        // Populate the form fields with the course data
+        $('#editCourseCode').val(code);
+        $('#editCourseName').val(name);
+        $('#editCollegeCode').val(college_code);
+        
+        // Show the modal after the form fields have been populated
+        $('#editCourseModal').modal('show');
+    });
+
     $("#editCourseForm").on('submit', function(e) {
         e.preventDefault();
         $.ajax({
@@ -86,27 +107,12 @@
                 }
             }
         });
-    });     
+    });
 
-    $('#editCourseModal').on('show.bs.modal', function(event) {
-        var button = $(event.relatedTarget); // Button that triggered the modal
-        var code = button.data('code'); // Extract info from data-* attributes
-        var formAction = "/courses/edit/" + code;
-        
-        // Get the row that the button is in
-        var row = button.closest('tr');
-        
-        // Get the course data from the data-* attributes
-        var name = row.find('td[data-name]').data('name');
-        var college_code = row.find('td[data-college_code]').data('college_code');
-        
-        // Populate the form fields with the course data
-        $('#editCode').val(code);  // correct ID for the code field
-        $('#editName').val(name);  // correct ID for the name field
-        $('#editCollegeCode').val(college_code);
-        
-        $('#editCourseForm').attr('action', formAction);
-    }); 
+    $('#editCourseModal').on('hidden.bs.modal', function (e) {
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').remove();
+    });
 </script>
 
 <script>

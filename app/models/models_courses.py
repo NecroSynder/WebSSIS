@@ -55,11 +55,15 @@ class Courses:
         cur.close()
 
     @staticmethod
-    def delete_by_course(course_code):
+    def delete(code):
         cur = mysql.connection.cursor()
-        cur.execute("DELETE FROM student WHERE course_code=%s", (course_code,))
+        # Delete any students associated with the course
+        cur.execute("DELETE FROM student WHERE course_code=%s", (code,))
+        # Delete the course
+        cur.execute("DELETE FROM course WHERE code=%s", (code,))
         mysql.connection.commit()
         cur.close()
+
         
     @staticmethod
     def delete_by_college(college_code):
