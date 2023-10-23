@@ -63,3 +63,13 @@ def edit_course(code):
     except Exception as e:
         logging.exception("Exception occurred")
         return jsonify({'success': False, 'message': 'Error updating course'})
+
+
+@courses.route("/courses/search", methods=["GET"])
+def search_courses():
+    search_term = request.args.get("search_term", "").strip()
+    if not search_term:
+        results = Courses.get_all()  # get all courses if search_term is empty
+    else:
+        results = Courses.search(search_term)  # search courses if search_term is not empty
+    return jsonify(results)

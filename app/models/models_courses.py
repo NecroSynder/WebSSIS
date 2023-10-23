@@ -71,3 +71,12 @@ class Courses:
         cur.execute("DELETE FROM course WHERE college_code=%s", (college_code,))
         mysql.connection.commit()
         cur.close()
+        
+    @staticmethod
+    def search(term):
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM course WHERE code LIKE %s OR name LIKE %s OR college_code LIKE %s", ('%' + term + '%', '%' + term + '%', '%' + term + '%',))
+        data = cur.fetchall()
+        cur.close()
+        return data
+
