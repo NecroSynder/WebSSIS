@@ -10,9 +10,20 @@
         <div class="col-sm-2"></div>
         <!-- content goes here -->
         <div class="col-sm-8">
-            <h2>Student List <button class="btn btn-primary float-end" data-toggle="modal"
-                    data-target="#myStudentModal">Add
-                    Student</button></h2>
+            <div class="d-flex justify-content-between align-items-center">
+                <div><h2>Student List</h2></div>
+                <div>
+                    <form id="search-form" action="/students/search" method="get">
+                        <div class="input-group">
+                            <input type="search" name="search_term" id="search-input" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+                            <button type="submit" class="btn btn-outline-primary">search</button>
+                        </div>
+                    </form>                                        
+                </div>
+                <div>
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#myStudentModal">Add Student</button>
+                </div>
+            </div>
 
             {%with messages = get_flashed_messages()%}
             {%if messages%}
@@ -180,5 +191,40 @@
     });
 </script>
 
+<script>
+    $(document).ready(function() {
+        $("#search-form").on('submit', function(e) {
+            e.preventDefault();
+            var form = $(this);
+            $.ajax({
+                url: form.attr('action'),
+                type: 'GET',
+                data: form.serialize(),
+                success: function(response) {
+                    // Clear the existing table
+                    $(".students-table tbody").empty();
+                    
+                    // Populate the table with the search results
+                    $.each(response, function(i, student) {
+                        var row = $("<tr>");
+                        $.each(student, function(j, field) {
+                            row.append($("<td>").text(field));
+                        });
+                        row.append(
+                            `<td>
+                                <a href="#" class="btn btn-warning btn-sm edit-btn" data-toggle="modal" data-target="#editStudentModal" data-id="${student[0]}">Edit</a>
+                                <form class="delete-form d-inline" action="/students/delete/${student[0]}" method="POST">
+                                    <input type="hidden" name="csrf_token" value="${$('meta[name="csrf-token"]').attr('content')}">
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </td>`
+                        );
+                        $(".students-table tbody").append(row);
+                    });
+                }
+            });
+        });
+    });
+</script>    
 
 {% endblock %}

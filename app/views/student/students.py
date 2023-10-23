@@ -47,8 +47,8 @@ def delete_student(id):
 
 @students.route("/students/edit", methods=["POST"])
 def edit_student():
-    print("Edit route hit")  # Print statement to check if route is hit
-    print(request.form)  # Print the request.form data
+    # print("Edit route hit")  # Print statement to check if route is hit
+    # print(request.form)  # Print the request.form data
     new_id = request.form["id"]
     old_id = request.form["old_id"]
     first_name = request.form["firstName"]
@@ -56,15 +56,19 @@ def edit_student():
     course_code = request.form["courseCode"]
     year_level = request.form["yearLevel"]
     gender = request.form["gender"]
-    print(f"Attempting to update student with old_id: {old_id} to new_id: {new_id}")
+    # print(f"Attempting to update student with old_id: {old_id} to new_id: {new_id}")
     if Students.update(old_id, new_id, first_name, last_name, course_code, year_level, gender):
-        print("Student updated successfully")
+        # print("Student updated successfully")
         return jsonify({'success': True})
     else:
-        print("Error updating student")
+        # print("Error updating student")
         return jsonify({'success': False, 'message': 'Error updating student'})
 
-
-
-
-
+@students.route("/students/search", methods=["GET"])
+def search_students():
+    search_term = request.args.get("search_term", "").strip()
+    if not search_term:
+        results = Students.get_all()  # get all students if search_term is empty
+    else:
+        results = Students.search(search_term)  # search students if search_term is not empty
+    return jsonify(results)

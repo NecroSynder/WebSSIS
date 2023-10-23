@@ -55,3 +55,31 @@ class Students:
         cur.execute("DELETE FROM student WHERE course_code=%s", (course_code,))
         mysql.connection.commit()
         cur.close()
+        
+    @staticmethod
+    def search(term):
+        cur = mysql.connection.cursor()
+        if term.capitalize() in ['Male', 'Female']:
+            # If the term is 'Male' or 'Female', only search in the 'gender' field
+            cur.execute(
+                "SELECT * FROM student WHERE gender = %s",
+                (term.capitalize(),),
+            )
+        else:
+            try:
+                # If the term can be converted to an integer, search only in 'year'
+                year = int(term)
+                cur.execute(
+                    "SELECT * FROM student WHERE year = %s",
+                    (year,),
+                )
+            except ValueError:
+                # Otherwise, search in 'id', 'firstname', 'lastname', and 'course_code'
+                term = '%' + term.lower() + '%'
+                cur.execute(
+                    "SELECT * FROM student WHERE LOWER(id) LIKE %s OR LOWER(firstname) LIKE %s OR LOWER(lastname) LIKE %s OR LOWER(course_code) LIKE %s",
+                    (term, term, term, term,),
+                )
+        data = cur.fetchall()
+        cur.close()
+        return data
