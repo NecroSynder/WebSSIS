@@ -1,5 +1,4 @@
 
-
 # models_students.py
 from app import mysql
 
@@ -42,6 +41,7 @@ class Students:
         cur.close()
         return affected_rows > 0
 
+
     @staticmethod
     def delete(id):
         cur = mysql.connection.cursor()
@@ -56,6 +56,13 @@ class Students:
         mysql.connection.commit()
         cur.close()
         
+    @staticmethod
+    def delete_by_college(college_code):
+        cur = mysql.connection.cursor()
+        cur.execute("DELETE FROM student WHERE course_code IN (SELECT code FROM course WHERE college_code=%s)", (college_code,))
+        mysql.connection.commit()
+        cur.close()
+    
     @staticmethod
     def search(term):
         cur = mysql.connection.cursor()

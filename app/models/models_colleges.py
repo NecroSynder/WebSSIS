@@ -48,13 +48,26 @@ class Colleges:
     @staticmethod
     def update(old_code, new_code, name):
         cur = mysql.connection.cursor()
-        cur.execute(
-            "UPDATE college SET code=%s, name=%s WHERE code=%s",  
-            (new_code, name, old_code),
-        )
-        mysql.connection.commit()
-        cur.close()
+        try:
+            # Start transaction
+            cur.execute("START TRANSACTION")
 
+            # Update the college code in the college table
+            cur.execute(
+                "UPDATE college SET code=%s, name=%s WHERE code=%s",  
+                (new_code, name, old_code),
+            )
+
+            # Commit transaction
+            mysql.connection.commit()
+
+        except Exception as e:
+            # Rollback transaction in case of error
+            mysql.connection.rollback()
+            raise e
+
+        finally:
+            cur.close()
 
     @staticmethod
     def delete(code):
@@ -64,11 +77,8 @@ class Colleges:
             cur.execute("START TRANSACTION")
 
             # Delete all students and courses associated with the college
-            courses = Courses.get_all()
-            for course in courses:
-                if course[2] == code:  # Assuming 'college_code' is at position 2
-                    Students.delete_by_course(course[0])  # Assuming 'code' is at position 0
-                    Courses.delete_by_college(code)
+            Students.delete_by_college(code)
+            Courses.delete_by_college(code)
 
             # Delete the college
             cur.execute("DELETE FROM college WHERE code=%s", (code,))
@@ -83,14 +93,6 @@ class Colleges:
 
         finally:
             cur.close()
-
-    @staticmethod
-    def delete_by_college(college_code):
-        cur = mysql.connection.cursor()
-        cur.execute("DELETE FROM course WHERE college_code=%s", (college_code,))
-        mysql.connection.commit()
-        cur.close()
-        
     
     @staticmethod
     def search(term):
