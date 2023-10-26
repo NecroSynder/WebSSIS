@@ -190,35 +190,29 @@
 
 <script>
     $("#search-form").on('submit', function(e) {
-        e.preventDefault();  // prevent form submission
-    
-        var search_term = $("#search-input").val();
-        if(search_term.trim() === "") {
-            // Fetch all colleges when search input field is empty
-            $.ajax({
-                url: "/colleges/search",
-                type: "GET",
-                success: function(results) {
-                    updateTable(results);
-                },
-                error: function(xhr, textStatus, error) {
-                    // handle the error response
-                }
-            });
-        } else {
-            // Fetch search results
-            $.ajax({
-                url: "/colleges/search",
-                type: "GET",
-                data: { search_term: search_term },
-                success: function(results) {
-                    updateTable(results);
-                },
-                error: function(xhr, textStatus, error) {
-                    // handle the error response
-                }
-            });
-        }
+        e.preventDefault();
+        var form = $(this);
+        $.ajax({
+            url: form.attr('action'),
+            type: 'GET',
+            data: form.serialize(),
+            success: function(response) {
+                // Clear the existing table
+                $('.college-table tbody').empty();
+                
+                // Add the search results to the table
+                for (var i = 0; i < response.length; i++) {
+                    var college = response[i];
+                    var row = '<tr><td>' + college[0] + '</td><td>' + college[1] + '</td>';
+                
+                    // Add the action buttons to the row
+                    row += '<td><div class="d-flex justify-content-start"><button type="button" class="btn btn-warning btn-sm btn-edit btn-spacing" data-toggle="modal" data-target="#editCollegeModal" data-id="' + college[0] + '">Edit</button>';
+                    row += '<form class="delete-form" action="/colleges/delete/' + college[0] + '" method="POST"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button type="submit" class="btn btn-danger btn-sm" data-id="' + college[0] + '">Delete</button></form></div></td></tr>';
+                    
+                    $('.college-table tbody').append(row);
+                }                
+            }
+        });
     });      
 
     function updateTable(results) {

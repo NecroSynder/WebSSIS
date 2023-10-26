@@ -183,18 +183,18 @@
             data: form.serialize(),
             success: function(response) {
                 // Clear the existing table
-                $('.students-table tbody').empty();
+                $('.courses-table tbody').empty();
                 
                 // Add the search results to the table
                 for (var i = 0; i < response.length; i++) {
-                    var student = response[i];
-                    var row = '<tr><td>' + student[0] + '</td><td>' + student[1] + '</td><td>' + student[2] + '</td><td>' + student[3] + '</td><td>' + student[4] + '</td><td>' + student[5] + '</td>';
+                    var course = response[i];
+                    var row = '<tr><td>' + course[0] + '</td><td>' + course[1] + '</td><td>' + course[2] + '</td>';
                 
                     // Add the action buttons to the row
-                    row += '<td><div class="d-flex justify-content-start"><button type="button" class="btn btn-warning btn-sm btn-edit btn-spacing" data-toggle="modal" data-target="#editStudentModal" data-id="' + student[0] + '">Edit</button>';
-                    row += '<form class="delete-form" action="/students/delete/' + student[0] + '" method="POST"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button type="submit" class="btn btn-danger btn-sm" data-id="' + student[0] + '">Delete</button></form></div></td></tr>';
+                    row += '<td><div class="d-flex justify-content-start"><button type="button" class="btn btn-warning btn-sm btn-edit btn-spacing" data-toggle="modal" data-target="#editCourseModal" data-code="' + course[0] + '">Edit</button>';
+                    row += '<form class="delete-form" action="/courses/delete/' + course[0] + '" method="POST"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button type="submit" class="btn btn-danger btn-sm" data-code="' + course[0] + '">Delete</button></form></div></td></tr>';
                     
-                    $('.students-table tbody').append(row);
+                    $('.courses-table tbody').append(row);
                 }                
             }
         });
