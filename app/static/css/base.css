@@ -86,6 +86,7 @@ background: #fff;
 .students-table th:nth-child(5), .students-table td:nth-child(5) {width: 10%}
 .students-table th:nth-child(6), .students-table td:nth-child(6) {width: 10%}
 .students-table th:nth-child(7), .students-table td:nth-child(7) {width: 10%}
+.students-table th:nth-child(7), .students-table td:nth-child(8) {width: 10%}
 
 
 .college-table {

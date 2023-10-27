@@ -33,8 +33,8 @@ def add_student():
     try:
         Students.add(id, first_name, last_name, course_code, year_level, gender)
         return jsonify({'success': True})
-    except:
-        return jsonify({'success': False, 'message': 'Error adding student'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)})
 
 @students.route('/students/delete/<id>', methods=['POST'])
 def delete_student(id):

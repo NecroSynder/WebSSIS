@@ -62,7 +62,7 @@
                                     <!-- Delete button -->
                                     <form class="delete-form" action="{{ url_for('courses.delete_course', code=course[0]) }}" method="POST">
                                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                        <button type="submit" class="btn btn-danger btn-sm" data-code="{{ course[0] }}">Delete</button>
+                                        <button type="submit" class="btn btn-danger btn-sm btn-delete" data-code="{{ course[0] }}">Delete</button>
                                     </form>
                                 </div>
                             </td>
@@ -155,11 +155,12 @@
 </script>
 
 <script>
-    $(".delete-form").on('submit', function(e) {
+    $(document).on('click', '.btn-delete', function(e) {
         e.preventDefault();
-        var form = $(this);
+        var form = $(this).closest('form');
+        var url = form.attr('action');
         $.ajax({
-            url: form.attr('action'),
+            url: url,
             type: 'POST',
             data: form.serialize(),
             success: function(response) {
@@ -170,7 +171,7 @@
                 }
             }
         });
-    });
+    });    
 </script>
 
 <script>
@@ -192,13 +193,13 @@
                 
                     // Add the action buttons to the row
                     row += '<td><div class="d-flex justify-content-start"><button type="button" class="btn btn-warning btn-sm btn-edit btn-spacing" data-toggle="modal" data-target="#editCourseModal" data-code="' + course[0] + '">Edit</button>';
-                    row += '<form class="delete-form" action="/courses/delete/' + course[0] + '" method="POST"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button type="submit" class="btn btn-danger btn-sm" data-code="' + course[0] + '">Delete</button></form></div></td></tr>';
+                    row += '<form class="delete-form" action="/courses/delete/' + course[0] + '" method="POST"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button type="submit" class="btn btn-danger btn-sm btn-delete" data-code="' + course[0] + '">Delete</button></form></div></td></tr>';
                     
                     $('.courses-table tbody').append(row);
                 }                
             }
         });
-    });    
+    });     
 </script>
 
 {% endblock %}

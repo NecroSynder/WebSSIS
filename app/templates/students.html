@@ -46,9 +46,10 @@
                             <th scope="col">ID</th>
                             <th scope="col">First Name</th>
                             <th scope="col">Last Name</th>
-                            <th scope="col">Course Code</th>
+                            <th scope="col">Course Name</th>
                             <th scope="col">Year Level</th>
                             <th scope="col">Gender</th>
+                            <th scope="col">College Name</th>
                             <th scope="col">Action</th>
                         </tr>
                     </thead>
@@ -58,9 +59,10 @@
                             <td>{{ student[0] }}</td>
                             <td>{{ student[1] }}</td>
                             <td>{{ student[2] }}</td>
-                            <td>{{ student[3] }}</td>
+                            <td>{{ student[3] }} ({{ student[7] }})</td> <!-- Display the college code beside the course name -->
                             <td>{{ student[4] }}</td>
                             <td>{{ student[5] }}</td>
+                            <td>{{ student[6] }} ({{ student[7] }})</td>
                             <td>
                                 <a href="#" class="btn btn-warning btn-sm edit-btn" data-toggle="modal"
                                     data-target="#editStudentModal" data-id="{{ student[0] }}">Edit</a>
@@ -72,7 +74,7 @@
                         </tr>
                         {% endfor %}
                     </tbody>
-                </table>
+                </table>                
             </div>
         </div>
     </div>
@@ -132,9 +134,9 @@
         $('.modal-backdrop').remove();
     });
 
-    $('.students-table').on('click', '.edit-btn', function() {
+    $(document).on('click', '.edit-btn', function(e) {
         var row = $(this).closest('tr');
-        
+            
         // Get the current data of the student from the DOM
         var id = row.find('td:nth-child(1)').text();
         var firstName = row.find('td:nth-child(2)').text();
@@ -142,7 +144,7 @@
         var courseCode = row.find('td:nth-child(4)').text();
         var yearLevel = row.find('td:nth-child(5)').text();
         var gender = row.find('td:nth-child(6)').text();
-        
+            
         // Populate the fields of the edit form with the current data of the student
         $('#editStudentModal input[name="id"]').val(id);
         $('#editStudentModal input[name="old_id"]').val(id);
@@ -150,7 +152,7 @@
         $('#editStudentModal input[name="lastName"]').val(lastName);
         $('#editStudentModal select[name="courseCode"]').val(courseCode);
         $('#editStudentModal input[name="yearLevel"]').val(yearLevel);
-        
+            
         // Select the correct gender radio button
         if (gender === 'Male') {
             $('#editStudentModal #male').prop('checked', true);
@@ -160,7 +162,7 @@
     
         // Show the modal after the form fields have been populated
         $('#editStudentModal').modal('show');
-    });
+    });    
 </script>
 
 <script>
@@ -173,7 +175,26 @@
 </script>
 
 <script>
-    $(".delete-form").on('submit', function(e) {
+   /* $(document).ready(function() {
+        $(".delete-form").on('submit', function(e) {
+            e.preventDefault();
+            var form = $(this);
+            $.ajax({
+                url: form.attr('action'),
+                type: 'POST',
+                data: form.serialize(),
+                success: function(response) {
+                    if (response.success) {
+                        form.closest('tr').remove();
+                    } else {
+                        alert(response.message);
+                    }
+                }
+            });
+        });
+    }); */
+    
+    $(document).on('click', '.delete-form', function(e) {
         e.preventDefault();
         var form = $(this);
         $.ajax({
@@ -182,13 +203,14 @@
             data: form.serialize(),
             success: function(response) {
                 if (response.success) {
-                    $("#students-tab-pane").load("/students/");
+                    form.closest('tr').remove();
+                    toastr.success('Item has been successfully deleted.'); // Add this line
                 } else {
-                    alert(response.message);
+                    toastr.error(response.message);
                 }
             }
         });
-    });
+    });        
 </script>
 
 <script>
@@ -206,25 +228,27 @@
                     
                     // Populate the table with the search results
                     $.each(response, function(i, student) {
-                        var row = $("<tr>");
-                        $.each(student, function(j, field) {
-                            row.append($("<td>").text(field));
-                        });
-                        row.append(
-                            `<td>
+                        var row = `<tr>
+                            <td>${student[0]}</td>
+                            <td>${student[1]}</td>
+                            <td>${student[2]}</td>
+                            <td>${student[3]} (${student[7]})</td>
+                            <td>${student[4]}</td>
+                            <td>${student[5]}</td>
+                            <td>${student[6]} (${student[7]})</td>
+                            <td>
                                 <a href="#" class="btn btn-warning btn-sm edit-btn" data-toggle="modal" data-target="#editStudentModal" data-id="${student[0]}">Edit</a>
                                 <form class="delete-form d-inline" action="/students/delete/${student[0]}" method="POST">
                                     <input type="hidden" name="csrf_token" value="${$('meta[name="csrf-token"]').attr('content')}">
                                     <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                                 </form>
-                            </td>`
-                        );
+                            </td>
+                        </tr>`;
                         $(".students-table tbody").append(row);
-                    });
+                    });                                        
                 }
             });
         });
     });
-</script>    
-
+</script>
 {% endblock %}

@@ -14,17 +14,31 @@ class Students:
     @staticmethod
     def get_all():
         cur = mysql.connection.cursor()
-        cur.execute("SELECT * FROM student")
+        cur.execute("""
+            SELECT student.id, student.firstname, student.lastname, 
+                course.name, student.year, student.gender,
+                college.name, course.college_code  # Changed student.college_code to course.college_code
+            FROM student
+            INNER JOIN course ON student.course_code = course.code
+            INNER JOIN college ON course.college_code = college.code  # Joined college on course.college_code instead of student.college_code
+        """)
         students = cur.fetchall()
         cur.close()
         return students
 
+
     @staticmethod
     def add(id, first_name, last_name, course_code, year_level, gender):
         cur = mysql.connection.cursor()
+        
+        # Fetch the college_code associated with the provided course_code
+        cur.execute("SELECT college_code FROM course WHERE code=%s", (course_code,))
+        college_code = cur.fetchone()[0]  # Assuming college_code is the first column in the result
+
+        # Insert the new student with the fetched college_code
         cur.execute(
-            "INSERT INTO student(id, firstname, lastname, course_code, year, gender) VALUES(%s, %s, %s, %s, %s, %s)",
-            (id, first_name, last_name, course_code, year_level, gender),
+            "INSERT INTO student(id, firstname, lastname, course_code, year, gender, college_code) VALUES(%s, %s, %s, %s, %s, %s, %s)",
+            (id, first_name, last_name, course_code, year_level, gender, college_code),
         )
         mysql.connection.commit()
         cur.close()
@@ -32,9 +46,14 @@ class Students:
     @staticmethod
     def update(old_id, new_id, first_name, last_name, course_code, year_level, gender):
         cur = mysql.connection.cursor()
+
+        # Fetch the college_code associated with the provided course_code
+        cur.execute("SELECT college_code FROM course WHERE code=%s", (course_code,))
+        college_code = cur.fetchone()[0]  # Assuming college_code is the first column in the result
+
         cur.execute(
-            "UPDATE student SET id=%s, firstName=%s, lastName=%s, course_code=%s, year=%s, gender=%s WHERE id=%s",
-            (new_id, first_name, last_name, course_code, year_level, gender, old_id),
+            "UPDATE student SET id=%s, firstName=%s, lastName=%s, course_code=%s, year=%s, gender=%s, college_code=%s WHERE id=%s",
+            (new_id, first_name, last_name, course_code, year_level, gender, college_code, old_id),
         )
         affected_rows = cur.rowcount
         mysql.connection.commit()
@@ -66,27 +85,24 @@ class Students:
     @staticmethod
     def search(term):
         cur = mysql.connection.cursor()
-        if term.capitalize() in ['Male', 'Female']:
-            # If the term is 'Male' or 'Female', only search in the 'gender' field
-            cur.execute(
-                "SELECT * FROM student WHERE gender = %s",
-                (term.capitalize(),),
-            )
-        else:
-            try:
-                # If the term can be converted to an integer, search only in 'year'
-                year = int(term)
-                cur.execute(
-                    "SELECT * FROM student WHERE year = %s",
-                    (year,),
-                )
-            except ValueError:
-                # Otherwise, search in 'id', 'firstname', 'lastname', and 'course_code'
-                term = '%' + term.lower() + '%'
-                cur.execute(
-                    "SELECT * FROM student WHERE LOWER(id) LIKE %s OR LOWER(firstname) LIKE %s OR LOWER(lastname) LIKE %s OR LOWER(course_code) LIKE %s",
-                    (term, term, term, term,),
-                )
+        term = '%' + term.lower() + '%'
+        cur.execute(
+            """
+            SELECT student.id, student.firstname, student.lastname, 
+            course.name, student.year, student.gender,
+            college.name, course.college_code  # Changed student.college_code to course.college_code
+            FROM student 
+            INNER JOIN course ON student.course_code = course.code
+            INNER JOIN college ON course.college_code = college.code  # Joined college on course.college_code instead of student.college_code
+            WHERE LOWER(student.id) LIKE %s 
+            OR LOWER(student.firstname) LIKE %s 
+            OR LOWER(student.lastname) LIKE %s 
+            OR LOWER(course.name) LIKE %s 
+            OR LOWER(college.name) LIKE %s
+            OR LOWER(course.college_code) LIKE %s
+            """,
+            (term, term, term, term, term, term,),
+        )
         data = cur.fetchall()
         cur.close()
         return data
