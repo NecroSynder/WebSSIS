@@ -10,7 +10,11 @@
                 <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="addStudentForm" action="{{ url_for('students.add_student') }}" method="POST">
+                <form id="addStudentForm" action="{{ url_for('students.add_student') }}" method="POST" enctype="multipart/form-data">
+                    <div class="form-group mb-3">
+                        <label>Profile Picture</label>
+                        <input type="file" name="profilePic" class="form-control">
+                    </div>
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="form-group mb-3">
                         <label>ID Code</label>

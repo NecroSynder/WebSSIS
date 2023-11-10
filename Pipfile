@@ -13,6 +13,7 @@ jinja2 = "*"
 mysql-connector-python = "*"
 flask = "*"
 flask-mysqldb = "*"
+cloudinary = "*"
 
 [dev-packages]
 

@@ -3,6 +3,7 @@
 from app import mysql
 
 class Students:
+    
     @staticmethod
     def get_by_id(id):
         cur = mysql.connection.cursor()
@@ -17,10 +18,10 @@ class Students:
         cur.execute("""
             SELECT student.id, student.firstname, student.lastname, 
                 course.name, student.year, student.gender,
-                college.name, course.college_code  # Changed student.college_code to course.college_code
+                college.name, course.college_code, student.profile_pic_url  # Include profile_pic_url in the SELECT clause
             FROM student
             INNER JOIN course ON student.course_code = course.code
-            INNER JOIN college ON course.college_code = college.code  # Joined college on course.college_code instead of student.college_code
+            INNER JOIN college ON course.college_code = college.code
         """)
         students = cur.fetchall()
         cur.close()
@@ -28,32 +29,33 @@ class Students:
 
 
     @staticmethod
-    def add(id, first_name, last_name, course_code, year_level, gender):
+    def add(id, first_name, last_name, course_code, year_level, gender, profile_pic_url):  # Include profile_pic_url
         cur = mysql.connection.cursor()
         
         # Fetch the college_code associated with the provided course_code
         cur.execute("SELECT college_code FROM course WHERE code=%s", (course_code,))
         college_code = cur.fetchone()[0]  # Assuming college_code is the first column in the result
 
-        # Insert the new student with the fetched college_code
+        # Insert the new student with the fetched college_code and profile picture URL
         cur.execute(
-            "INSERT INTO student(id, firstname, lastname, course_code, year, gender, college_code) VALUES(%s, %s, %s, %s, %s, %s, %s)",
-            (id, first_name, last_name, course_code, year_level, gender, college_code),
+            "INSERT INTO student(id, firstname, lastname, course_code, year, gender, college_code, profile_pic_url) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)",
+            (id, first_name, last_name, course_code, year_level, gender, college_code, profile_pic_url),  # Include profile_pic_url
         )
         mysql.connection.commit()
         cur.close()
 
     @staticmethod
-    def update(old_id, new_id, first_name, last_name, course_code, year_level, gender):
+    def update(old_id, new_id, first_name, last_name, course_code, year_level, gender, profile_pic_url):  # Include profile_pic_url
         cur = mysql.connection.cursor()
 
         # Fetch the college_code associated with the provided course_code
         cur.execute("SELECT college_code FROM course WHERE code=%s", (course_code,))
         college_code = cur.fetchone()[0]  # Assuming college_code is the first column in the result
 
+        # Update the student with the new data and profile picture URL
         cur.execute(
-            "UPDATE student SET id=%s, firstName=%s, lastName=%s, course_code=%s, year=%s, gender=%s, college_code=%s WHERE id=%s",
-            (new_id, first_name, last_name, course_code, year_level, gender, college_code, old_id),
+            "UPDATE student SET id=%s, firstName=%s, lastName=%s, course_code=%s, year=%s, gender=%s, college_code=%s, profile_pic_url=%s WHERE id=%s",
+            (new_id, first_name, last_name, course_code, year_level, gender, college_code, profile_pic_url, old_id),  # Include profile_pic_url
         )
         affected_rows = cur.rowcount
         mysql.connection.commit()
@@ -90,10 +92,10 @@ class Students:
             """
             SELECT student.id, student.firstname, student.lastname, 
             course.name, student.year, student.gender,
-            college.name, course.college_code  # Changed student.college_code to course.college_code
+            college.name, course.college_code, student.profile_pic_url  # Include profile_pic_url in the SELECT clause
             FROM student 
             INNER JOIN course ON student.course_code = course.code
-            INNER JOIN college ON course.college_code = college.code  # Joined college on course.college_code instead of student.college_code
+            INNER JOIN college ON course.college_code = college.code
             WHERE LOWER(student.id) LIKE %s 
             OR LOWER(student.firstname) LIKE %s 
             OR LOWER(student.lastname) LIKE %s 
@@ -103,6 +105,6 @@ class Students:
             """,
             (term, term, term, term, term, term,),
         )
-        data = cur.fetchall()
+        data = cur.fetchall()        
         cur.close()
         return data

@@ -3,6 +3,8 @@
 from flask import Blueprint, render_template, request, redirect, url_for, jsonify
 from app.models.models_students import Students
 from app.models.models_courses import Courses
+import cloudinary.uploader
+
 
 
 students = Blueprint('students', __name__, template_folder='templates')
@@ -23,27 +25,54 @@ def add_student():
     course_code = request.form.get('courseCode')
     year_level = request.form.get('yearLevel')
     gender = request.form.get('gender')
-    
+    profile_pic_file = request.files['profilePic']  # new line to get the profile picture file
+
     # Check if the student already exists
     existing_student = Students.get_by_id(id)
     if existing_student:
         return jsonify({'success': False, 'message': 'A student with this ID already exists.'})
 
+    # Upload the profile picture file to Cloudinary
+    upload_response = cloudinary.uploader.upload(profile_pic_file)
+    if upload_response is None:
+        return jsonify({'success': False, 'message': 'Image upload failed.'})
+    profile_pic_url = upload_response['url']
+    print(profile_pic_url)
+
     # Call the add() method from the Students model
     try:
-        Students.add(id, first_name, last_name, course_code, year_level, gender)
-        return jsonify({'success': True})
+        Students.add(id, first_name, last_name, course_code, year_level, gender, profile_pic_url)  
+        # Include profile_pic_url
+        return jsonify({'success': True, 'profile_pic_url': profile_pic_url})
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)})
 
+
 @students.route('/students/delete/<id>', methods=['POST'])
 def delete_student(id):
+    # Fetch the student record
+    student = Students.get_by_id(id)
+    
+    if student is None:
+        return jsonify({'success': False, 'message': 'No student with this ID exists.'})
+
+    # Extract public_id from the profile_pic_url
+    profile_pic_url = student[7]
+    if profile_pic_url:  # Check if profile_pic_url exists
+        public_id = profile_pic_url.split("/")[-1].split(".")[0]
+        
+        # Delete the image from Cloudinary
+        try:
+            cloudinary.uploader.destroy(public_id)
+        except Exception as e:
+            return jsonify({'success': False, 'message': f"Error deleting image from Cloudinary: {str(e)}"})
+            
+    # Delete the student from the database
     try:
-        # Call the delete() method from the Students model
         Students.delete(id)
         return jsonify({'success': True})
-    except:
-        return jsonify({'success': False, 'message': 'Error deleting student'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': f"Error deleting student from database: {str(e)}"})
 
 @students.route("/students/edit", methods=["POST"])
 def edit_student():
