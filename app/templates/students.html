@@ -90,6 +90,7 @@
     $("#addStudentForm").on('submit', function(e) {
         e.preventDefault();
         var formData = new FormData(this);  // Use FormData instead of serialize
+        $('#add_notification').text('Adding...').show();
         $.ajax({
             url: $(this).attr('action'),
             type: 'POST',
@@ -113,7 +114,9 @@
     $("#editStudentForm").on('submit', function(e) {
         e.preventDefault();
         var formData = new FormData(this);  // Use FormData to include the file input
-    
+        
+        $('#edit_notification').text('Updating...').show();
+
         $.ajax({
             url: $(this).attr('action'),
             type: "POST",
