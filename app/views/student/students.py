@@ -1,6 +1,6 @@
 
 # students.py
-from flask import Blueprint, render_template, request, redirect, url_for, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, jsonify, flash
 from app.models.models_students import Students
 from app.models.models_courses import Courses
 import cloudinary.uploader
@@ -76,8 +76,6 @@ def delete_student(id):
 
 @students.route("/students/edit", methods=["POST"])
 def edit_student():
-    # print("Edit route hit")  # Print statement to check if route is hit
-    # print(request.form)  # Print the request.form data
     new_id = request.form["id"]
     old_id = request.form["old_id"]
     first_name = request.form["firstName"]
@@ -85,19 +83,35 @@ def edit_student():
     course_code = request.form["courseCode"]
     year_level = request.form["yearLevel"]
     gender = request.form["gender"]
-    # print(f"Attempting to update student with old_id: {old_id} to new_id: {new_id}")
-    if Students.update(old_id, new_id, first_name, last_name, course_code, year_level, gender):
-        # print("Student updated successfully")
-        return jsonify({'success': True})
-    else:
-        # print("Error updating student")
-        return jsonify({'success': False, 'message': 'Error updating student'})
+    profile_pic_file = request.files.get('profilePic')  # Get the new profile picture file
 
-@students.route("/students/search", methods=["GET"])
-def search_students():
-    search_term = request.args.get("search_term", "").strip()
-    if not search_term:
-        results = Students.get_all()  # get all students if search_term is empty
+    # Fetch the old student data
+    old_student = Students.get_by_id(old_id)
+    if old_student is None:
+        return jsonify({'success': False, 'message': 'No student with this ID exists.'})
+
+    if profile_pic_file:  # Check if a new profile picture file is provided
+        # Extract public_id from the old profile_pic_url
+        old_profile_pic_url = old_student[7]
+        if old_profile_pic_url:  # Check if old_profile_pic_url exists
+            old_public_id = old_profile_pic_url.split("/")[-1].split(".")[0]
+
+            # Delete the old image from Cloudinary
+            try:
+                cloudinary.uploader.destroy(old_public_id)
+            except Exception as e:
+                return jsonify({'success': False, 'message': f"Error deleting old image from Cloudinary: {str(e)}"})
+
+        # Upload the new profile picture file to Cloudinary
+        upload_response = cloudinary.uploader.upload(profile_pic_file)
+        if upload_response is None:
+            return jsonify({'success': False, 'message': 'New image upload failed.'})
+        new_profile_pic_url = upload_response['url']
+    else:  # If no new profile picture file is provided, use the old profile_pic_url
+        new_profile_pic_url = old_student[7]
+
+    # Update the student data in the database
+    if Students.update(old_id, new_id, first_name, last_name, course_code, year_level, gender, new_profile_pic_url):
+        return jsonify({'success': True, 'new_profile_pic_url': new_profile_pic_url})
     else:
-        results = Students.search(search_term)  # search students if search_term is not empty
-    return jsonify(results)
+        return jsonify({'success': False, 'message': 'Error updating student'})
