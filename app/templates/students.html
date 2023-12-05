@@ -112,13 +112,14 @@
 <script>
     $("#editStudentForm").on('submit', function(e) {
         e.preventDefault();
-        var form = $(this);
-        var formData = form.serialize();
+        var formData = new FormData(this);  // Use FormData to include the file input
     
         $.ajax({
-            url: form.attr('action'),
+            url: $(this).attr('action'),
             type: "POST",
             data: formData,
+            contentType: false,  // These two options are needed for file uploads
+            processData: false,
             success: function(response) {
                 if (response.success) {
                     $("#students-tab-pane").load("/students/");
@@ -143,19 +144,19 @@
         var row = $(this).closest('tr');
             
         // Get the current data of the student from the DOM
-        var id = row.find('td:nth-child(1)').text();
-        var firstName = row.find('td:nth-child(2)').text();
-        var lastName = row.find('td:nth-child(3)').text();
-        var courseCode = row.find('td:nth-child(4)').text();
-        var yearLevel = row.find('td:nth-child(5)').text();
-        var gender = row.find('td:nth-child(6)').text();
+        var id = row.find('td:nth-child(2)').text();
+        var firstName = row.find('td:nth-child(3)').text();
+        var lastName = row.find('td:nth-child(4)').text();
+        var courseCode = row.find('td:nth-child(5)').text();
+        var yearLevel = row.find('td:nth-child(6)').text();
+        var gender = row.find('td:nth-child(7)').text();
             
         // Populate the fields of the edit form with the current data of the student
         $('#editStudentModal input[name="id"]').val(id);
         $('#editStudentModal input[name="old_id"]').val(id);
         $('#editStudentModal input[name="firstName"]').val(firstName);
         $('#editStudentModal input[name="lastName"]').val(lastName);
-        $('#editStudentModal select[name="courseCode"]').val(courseCode);
+        $('#editStudentModal select[name="courseName"]').val(courseCode);
         $('#editStudentModal input[name="yearLevel"]').val(yearLevel);
             
         // Select the correct gender radio button
