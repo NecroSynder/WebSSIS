@@ -11,6 +11,12 @@ import cloudinary.api
 
 students = Blueprint('students', __name__, template_folder='templates')
 
+ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png'}
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 @students.route("/students/")
 def students_page():
     students_data = Students.get_all()
@@ -35,21 +41,22 @@ def add_student():
         return jsonify({'success': False, 'message': 'A student with this ID already exists.'})
 
     if profile_pic_file and profile_pic_file.filename != '':  # Check if a profile picture was provided
+        if allowed_file(profile_pic_file.filename):
         # Upload the profile picture file to Cloudinary
-        upload_response = cloudinary.uploader.upload(profile_pic_file)
-        if upload_response is None:
-            return jsonify({'success': False, 'message': 'Image upload failed.'})
-        profile_pic_url = upload_response['url']
-    else:
-        # Use the default profile picture from Cloudinary by asset_id
-        try:
-            # Fetch the default image using its asset_id
-            default_image = cloudinary.api.resource_by_asset_id("764f65563c0559414b15d10d6db3dcac")
-            profile_pic_url = default_image['url']
-        except cloudinary.api.NotFound:
-            return jsonify({'success': False, 'message': 'Default profile picture not found.'})
-        except Exception as e:
-            return jsonify({'success': False, 'message': str(e)})
+            upload_response = cloudinary.uploader.upload(profile_pic_file)
+            if upload_response is None:
+                return jsonify({'success': False, 'message': 'Image upload failed.'})
+            profile_pic_url = upload_response['url']
+        else:
+            # Use the default profile picture from Cloudinary by asset_id
+            try:
+                # Fetch the default image using its asset_id
+                default_image = cloudinary.api.resource_by_asset_id("764f65563c0559414b15d10d6db3dcac")
+                profile_pic_url = default_image['url']
+            except cloudinary.api.NotFound:
+                return jsonify({'success': False, 'message': 'Default profile picture not found.'})
+            except Exception as e:
+                return jsonify({'success': False, 'message': str(e)})
 
     # Call the add() method from the Students model
     try:
@@ -141,6 +148,7 @@ def edit_student():
 
     # Update the student data in the database
     if Students.update(old_id, new_id, first_name, last_name, course_code, year_level, gender, new_profile_pic_url):
+        # flash('Student details have been updated successfully!', 'success')
         return jsonify({'success': True, 'new_profile_pic_url': new_profile_pic_url})
     else:
         return jsonify({'success': False, 'message': 'Error updating student'})
