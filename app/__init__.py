@@ -7,6 +7,7 @@ from flask_wtf.csrf import CSRFProtect
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
+import os
 
 mysql = MySQL()
 bootstrap = Bootstrap()
@@ -24,9 +25,9 @@ def create_app(test_config=None):
 
     # Cloudinary configuration
     cloudinary.config( 
-        cloud_name = "dpqlka8bw", 
-        api_key = "661813982563883", 
-        api_secret = "1xEn7ZrXI-Ee_tFBqUIM-lZCDlc" 
+        cloud_name = os.getenv('CLOUD_NAME'), 
+        api_key = os.getenv('API_KEY'), 
+        api_secret = os.getenv('API_SECRET') 
     )
 
     bootstrap.init_app(app)
