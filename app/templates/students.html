@@ -25,15 +25,15 @@
                 </div>
             </div>
 
-            {%with messages = get_flashed_messages()%}
+            {% with messages = get_flashed_messages(with_categories=true) %}
             {%if messages%}
-            {% for message in messages %}
+            {% for category, message in messages %}
 
-            <div class="alert alert-success alert-dismissable" role="alert">
+            <div class="alert alert-{{ category }} alert-dismissable" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                {{message}}
+                {{ message }}
             </div>
 
             {%endfor%}
@@ -57,7 +57,7 @@
                     <tbody>
                         {% for student in students %}
                         <tr class="text-center align-middle fw-normal">
-                            <td><img src="{{ student[8] }}" class="rounded-circle border border-5 " style="width:100px; height:100px;" alt="Profile Picture"></td>
+                            <td><img src="{{ student[8] }}" class="rounded-circle border border-5 " style="width:100px; height:100px; object-fit: cover; object-position: center;" alt="Profile Picture"></td>
                             <td>{{ student[0] }}</td>
                             <td>{{ student[1] }}</td>
                             <td>{{ student[2] }}</td>
@@ -102,12 +102,49 @@
                     $("#students-tab-pane").load("/students/");
                     $('body').removeClass('modal-open');
                     $('.modal-backdrop').remove();
+                    toastr.success('Student details have been Added successfully!');
                 } else {
                     alert(response.message);
                 }
             }
         });
-    });     
+    });    
+    
+    function previewAndValidateFile(input) {
+        if (input.files && input.files[0]) {
+            var file = input.files[0];
+            var fileType = file["type"];
+            var validImageTypes = ["image/jpeg", "image/png", "image/jpg"];
+            var maxFileSize = 1 * 1024 * 1024; // limit file size
+    
+            // Check the file type
+            if ($.inArray(fileType, validImageTypes) < 0) {
+                // Invalid file type, show warning
+                alert("Invalid file type. Please upload a JPG or PNG file.");
+                // Clear the file input
+                input.value = '';
+                return false;
+            }
+    
+            // Check the file size
+            if (file.size > maxFileSize) {
+                alert('FILE SIZE MUST NOT EXCEED 1 MB.');
+                // Clear the file input
+                input.value = '';
+                return false;
+            }
+    
+            // If the function reaches this point, the file is valid, proceed to preview
+            var url = URL.createObjectURL(file);
+            var previewId = input.id == 'profilePic' ? 'imagePreview' : 'editImagePreview';
+            var iconUploadId = input.id == 'profilePic' ? 'iconUpload' : 'editIconUpload';
+            var preview = document.getElementById(previewId);
+            var iconUpload = document.getElementById(iconUploadId);
+            preview.src = url;
+            preview.style.display = "block";
+            iconUpload.style.display = "none";
+        }
+    }       
 </script>
 
 <script>
@@ -128,6 +165,7 @@
                     $("#students-tab-pane").load("/students/");
                     $('body').removeClass('modal-open');
                     $('.modal-backdrop').remove();
+                    toastr.success('Student details have been updated successfully!');
                 } else {
                     alert(response.message);
                 }
@@ -141,6 +179,9 @@
     $('#editStudentModal').on('hidden.bs.modal', function (e) {
         $('body').removeClass('modal-open');
         $('.modal-backdrop').remove();
+        // Reset the image preview and show the upload icon
+        $('#editImagePreview').attr('src', '').hide();
+        $('#editIconUpload').show();
     });
 
     $(document).on('click', '.edit-btn', function(e) {
@@ -171,7 +212,7 @@
     
         // Show the modal after the form fields have been populated
         $('#editStudentModal').modal('show');
-    });    
+    });  
 </script>
 
 <script>
@@ -241,6 +282,7 @@
         });
     });
 </script>
+
 <script>
     function transformImageUrl(imageUrl) {
         // Split the URL into parts
@@ -261,6 +303,6 @@
             $(this).attr('src', transformedUrl);
         });
     });
-    </script>
+</script>
     
 {% endblock %}
